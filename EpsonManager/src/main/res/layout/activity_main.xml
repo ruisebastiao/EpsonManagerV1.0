@@ -1,0 +1,40 @@
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.kpp.epsonmanager.CustomEpsonViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <!--
+        This title strip will display the currently visible page title, as well as the page
+        titles for adjacent pages.
+        -->
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@android:color/black"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:textColor="#e9d165" />
+
+    </com.kpp.epsonmanager.CustomEpsonViewPager>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView"
+        android:layout_gravity="center"
+        android:src="@drawable/logo"
+        android:scaleType="center"
+        android:alpha="0.25"
+        android:adjustViewBounds="true" />
+
+
+</FrameLayout>
