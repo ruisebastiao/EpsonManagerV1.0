@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EpsonManager.iml" filepath="$PROJECT_DIR$/EpsonManager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/EpsonManager/EpsonManager.iml" filepath="$PROJECT_DIR$/EpsonManager/EpsonManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/EpsonManager/EpsonManager-EpsonManager.iml" filepath="$PROJECT_DIR$/EpsonManager/EpsonManager-EpsonManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/EpsonManagerProject.iml" filepath="$PROJECT_DIR$/EpsonManagerProject.iml" />
     </modules>
