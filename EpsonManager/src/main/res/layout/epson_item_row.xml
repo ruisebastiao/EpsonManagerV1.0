@@ -9,7 +9,7 @@
     android:layoutMode="clipBounds"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:columnCount="5"
-    android:rowCount="5">
+    android:rowCount="6">
 
     <ImageView android:id="@+id/imgIcon"
         android:layout_width="32dp"
@@ -57,5 +57,15 @@
         android:textColor="#000000"
         android:hint="Nome não definido"
         android:layout_row="0"
-        android:layout_column="1" />
+        android:layout_column="1"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nome_in"
+        android:layout_row="5"
+        android:layout_column="1"
+        android:visibility="gone"
+        android:text="Teste" />
 </GridLayout>
