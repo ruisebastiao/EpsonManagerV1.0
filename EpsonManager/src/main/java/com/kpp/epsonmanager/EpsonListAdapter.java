@@ -7,6 +7,7 @@ import android.content.Context;
 
 import android.text.Editable;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,11 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
@@ -43,12 +47,13 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
+            //row.set
             holder = new EpsonHolder();
             holder.imgIcon = (ImageView)row.findViewById(R.id.imgIcon);
             holder.imgConnected = (ImageView)row.findViewById(R.id.imgEpsonConnected);
             holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
             holder.txtHostname = (TextView)row.findViewById(R.id.txtHostname);
-            holder.txtNome_in=(EditText)row.findViewById(R.id.nome_in);
+            holder.nome_switcher=(ViewSwitcher)row.findViewById(R.id.nome_switcher);
 
             row.setTag(holder);
         }
@@ -72,12 +77,53 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 //                txtTitle.setFocusable(true);
 //
                 //txtTitle.setBackgroundColor(context.getResources().getColor(android.R.color.holo_orange_light));
-                EditText nome_in= (EditText)holder.txtNome_in;
 
-                nome_in.setVisibility(View.VISIBLE);
+
+
+                final ViewSwitcher switcher = holder.nome_switcher;
+
+
+                final EditText nome_in = (EditText) switcher.findViewById(R.id.hidden_nome);
+
+                nome_in.setText(txtTitle.getText());
                 nome_in.setFocusable(true);
-                //nome_in.requestFocus();
+                nome_in.setFocusable(true);
+                nome_in.setFocusableInTouchMode(true);
+                nome_in.setClickable(true);
 
+
+                nome_in.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        //holder.txtTitle.setText(Integer.toString(keyCode));
+                        //switcher.showPrevious();
+                        if (keyCode==13 || keyCode==66){
+
+                            epson.title=nome_in.getText().toString();
+                            txtTitle.setText(epson.title);
+                            switcher.showPrevious();
+                            txtTitle.requestFocus();
+                            InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(txtTitle.getWindowToken(), 0);
+                        }
+                        return false;
+                    }
+                });
+                nome_in.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if(hasFocus){
+                            nome_in.setSelection(nome_in.getText().length());
+                            InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(nome_in, 0);
+                        }else {
+                         //switcher.showPrevious();
+                        }
+                    }
+                });
+
+                switcher.showNext(); //or switcher.showPrevious();
+                nome_in.requestFocus();
                 return  false;
             }
         });
@@ -132,6 +178,6 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
         ImageView imgConnected;
         TextView txtTitle;
         TextView txtHostname;
-        EditText txtNome_in;
+        ViewSwitcher nome_switcher;
     }
 }
