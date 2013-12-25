@@ -1,11 +1,15 @@
 package com.kpp.epsonmanager;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 
-
+import android.annotation.SuppressLint;
+import android.app.LoaderManager;
+import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,9 +17,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.widget.Toast;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements
+        LoaderManager.LoaderCallbacks<SharedPreferences> {
+
+    private static final String KEY = "prefs";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -33,11 +41,45 @@ public class MainActivity extends FragmentActivity {
     static CustomEpsonViewPager mEpsonViewPager =null;
 
     @Override
+    public Loader<SharedPreferences> onCreateLoader(int id, Bundle args) {
+        return (new PreferencesLoader(this));
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    @Override
+    public void onLoadFinished(Loader<SharedPreferences> loader,
+                               SharedPreferences prefs) {
+        int value = prefs.getInt(KEY, 0);
+        value += 1;
+        //display in long period of time
+        Toast.makeText(getApplicationContext(),String.valueOf(value), Toast.LENGTH_LONG).show();
+
+
+        // update value
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(KEY, value);
+        PreferencesLoader.persist(editor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<SharedPreferences> loader) {
+        // NOT used
+    }
+
+    public static final String EPSONSLIST = "epsonslist";
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getLoaderManager().initLoader(0, null, this);
+
+        String connectionsJSONString = getPreferences(MODE_PRIVATE).getString(EPSONSLIST, null);
+        //Type type = new TypeToken < List < EPSONSLIST>> () {}.getType();
+       // List < EPSONSLIST> connections = new  Gson().fromJson(connectionsJSONString, type)
 
         Epson epsons[] = new Epson[]
+
                 {
                         new Epson(R.drawable.robot, "MGB Gear Wheels","PC432-Automacao")
 
