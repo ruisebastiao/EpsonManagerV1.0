@@ -18,7 +18,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.widget.Toast;
-
+import org.json.*;
 
 public class MainActivity extends FragmentActivity implements
         LoaderManager.LoaderCallbacks<SharedPreferences> {
@@ -66,7 +66,6 @@ public class MainActivity extends FragmentActivity implements
         // NOT used
     }
 
-    public static final String EPSONSLIST = "epsonslist";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +73,30 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
         getLoaderManager().initLoader(0, null, this);
 
-        String connectionsJSONString = getPreferences(MODE_PRIVATE).getString(EPSONSLIST, null);
+     //   String connectionsJSONString = getPreferences(MODE_PRIVATE).getString(EPSONSLIST, null);
         //Type type = new TypeToken < List < EPSONSLIST>> () {}.getType();
-       // List < EPSONSLIST> connections = new  Gson().fromJson(connectionsJSONString, type)
+        //List < EPSONSLIST> connections = new  Gson().fromJson(connectionsJSONString, type);
+
+//        EpsonList epsonList= new EpsonList();
+
+//        Epson eps=new Epson();
+//        eps.setTitle("Teste");
+//        epsonList.getEpsonList().add(eps);
+//
+//        JSONArray jsonArr = new JSONArray();
+//
+//        for (Epson pn : epsonList.getEpsonList() ) {
+//            JSONObject pnObj = new JSONObject();
+//
+//            try {
+//                pnObj.put("title", pn.getTitle());
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            jsonArr.put(pnObj);
+//        }
+
 
         Epson epsons[] = new Epson[]
 
@@ -211,7 +231,7 @@ public class MainActivity extends FragmentActivity implements
                 case 1:
                     if ( Propriedades.getInstance().getSelectedEpson()!=null){
                         Epson epson=Propriedades.getInstance().getSelectedEpson();
-                        return epson.title;
+                        return epson.getTitle();
                     }
                     else
                         return  "";

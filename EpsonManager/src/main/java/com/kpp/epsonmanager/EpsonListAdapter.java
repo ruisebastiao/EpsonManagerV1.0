@@ -66,7 +66,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
         final TextView txtTitle=holder.txtTitle;
 
-        holder.txtTitle.setText(epson.title);
+        holder.txtTitle.setText(epson.getTitle());
         holder.txtTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -99,8 +99,8 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
                         //switcher.showPrevious();
                         if (keyCode==13 || keyCode==66){
 
-                            epson.title=nome_in.getText().toString();
-                            txtTitle.setText(epson.title);
+                            epson.setTitle(nome_in.getText().toString());
+                            txtTitle.setText(epson.getTitle());
                             switcher.showPrevious();
                             txtTitle.requestFocus();
                             InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);

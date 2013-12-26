@@ -4,14 +4,9 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 
-/**
- * Created by Geral on 14-10-2013.
- */
-
-
 public class Epson {
     public int icon;
-    public String title;
+    private String title;
 
     private String Hostname2;
     private String Hostname;
@@ -52,6 +47,14 @@ public class Epson {
         RobotConneted = robotConneted;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 
     public interface OnEpsonStatusChanged
     {
@@ -67,14 +70,14 @@ public class Epson {
     public Epson(int icon, String title,String hostname) {
         super();
         this.icon = icon;
-        this.title = title;
+        this.setTitle(title);
         this.Hostname=hostname;
         this.Hostname2="";
     }
 
     @Override
     public String toString(){
-        return  this.title;
+        return this.getTitle();
     }
 
     public boolean isConnected() {
