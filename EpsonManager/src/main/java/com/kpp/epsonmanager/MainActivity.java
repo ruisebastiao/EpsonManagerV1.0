@@ -1,5 +1,13 @@
 package com.kpp.epsonmanager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +16,7 @@ import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +25,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 import org.json.*;
@@ -66,6 +76,71 @@ public class MainActivity extends FragmentActivity implements
         // NOT used
     }
 
+    public Object DoDeserialize(String filename)
+    {
+        FileInputStream fis= null;
+        try {
+            fis = getApplicationContext().openFileInput(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Object o = null;
+        try {
+            o = ois.readObject();
+        } catch (OptionalDataException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return o;
+
+    }
+
+    public void SaveConfigurations(String filename, Object saveObject){
+        try
+        {
+            FileOutputStream fos=getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos); //Select where you wish to save the file...
+            oos.writeObject(saveObject); // write the class as an 'object'
+            oos.flush(); // flush the stream to insure all of the information was written to 'save.bin'
+            oos.close();// close the stream
+        }
+        catch(Exception ex)
+        {
+            Log.v("Configurations reading", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+    }
+
+    public EpsonConfigurations LoadConfigurations(String filename){
+        try {
+
+            File file =  getApplicationContext().getFileStreamPath(filename);
+            if(file.exists()){
+ 
+            }
+            else{
+
+                SaveConfigurations(filename, new EpsonConfigurations("Teste"));
+            }
+
+           return (EpsonConfigurations)DoDeserialize(filename);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,29 +148,10 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
         getLoaderManager().initLoader(0, null, this);
 
-     //   String connectionsJSONString = getPreferences(MODE_PRIVATE).getString(EPSONSLIST, null);
-        //Type type = new TypeToken < List < EPSONSLIST>> () {}.getType();
-        //List < EPSONSLIST> connections = new  Gson().fromJson(connectionsJSONString, type);
 
-//        EpsonList epsonList= new EpsonList();
+        //SaveConfigurations("Configurations.cfg", new EpsonConfigurations("Teste"));
+        EpsonConfigurations configs=(EpsonConfigurations) LoadConfigurations("Configurations.cfg");
 
-//        Epson eps=new Epson();
-//        eps.setTitle("Teste");
-//        epsonList.getEpsonList().add(eps);
-//
-//        JSONArray jsonArr = new JSONArray();
-//
-//        for (Epson pn : epsonList.getEpsonList() ) {
-//            JSONObject pnObj = new JSONObject();
-//
-//            try {
-//                pnObj.put("title", pn.getTitle());
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            jsonArr.put(pnObj);
-//        }
 
 
         Epson epsons[] = new Epson[]
