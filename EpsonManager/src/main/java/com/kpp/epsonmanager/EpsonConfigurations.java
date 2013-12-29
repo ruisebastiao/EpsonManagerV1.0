@@ -13,26 +13,22 @@ public  class EpsonConfigurations implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private String selectedEpson="NONE";
-
-    public String getSelectedEpson() {
-        return selectedEpson;
-    }
-
-    public void setSelectedEpson(String selectedEpson) {
-        this.selectedEpson = selectedEpson;
-    }
-
 
     public EpsonConfigurations(){
 
     }
 
-    public EpsonConfigurations(String Selected){
-        selectedEpson=Selected;
+
+    private ArrayList<Epson> Epsons= new ArrayList<Epson>();
+
+    public ArrayList<Epson> getEpsons() {
+        return Epsons;
     }
 
-    //private List<Epson> Epsons= new ArrayList<Epson>();
+    public void setEpsons(ArrayList<Epson> epsons) {
+        Epsons = epsons;
+    }
+
     //public List<Epson> getEpsonList() {
         //return Epsons;
     //}

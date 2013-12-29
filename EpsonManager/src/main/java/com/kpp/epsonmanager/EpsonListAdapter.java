@@ -19,6 +19,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 public class EpsonListAdapter extends ArrayAdapter<Epson> {
@@ -105,6 +106,12 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
                             txtTitle.requestFocus();
                             InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(txtTitle.getWindowToken(), 0);
+                        }
+                        else if(keyCode == KeyEvent.KEYCODE_BACK){
+                           // Toast.makeText(v.getContext(),String.valueOf("Back"), Toast.LENGTH_LONG).show();
+                            switcher.showPrevious();
+                            txtTitle.requestFocus();
+                            return true;
                         }
                         return false;
                     }

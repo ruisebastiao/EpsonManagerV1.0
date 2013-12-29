@@ -59,16 +59,16 @@ public class MainActivity extends FragmentActivity implements
     @Override
     public void onLoadFinished(Loader<SharedPreferences> loader,
                                SharedPreferences prefs) {
-        int value = prefs.getInt(KEY, 0);
-        value += 1;
-        //display in long period of time
-        Toast.makeText(getApplicationContext(),String.valueOf(value), Toast.LENGTH_LONG).show();
-
-
-        // update value
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(KEY, value);
-        PreferencesLoader.persist(editor);
+//        int value = prefs.getInt(KEY, 0);
+//        value += 1;
+//        //display in long period of time
+//        Toast.makeText(getApplicationContext(),String.valueOf(value), Toast.LENGTH_LONG).show();
+//
+//
+//        // update value
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putInt(KEY, value);
+//        PreferencesLoader.persist(editor);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class MainActivity extends FragmentActivity implements
             }
             else{
 
-                SaveConfigurations(filename, new EpsonConfigurations("Teste"));
+                SaveConfigurations(filename, new EpsonConfigurations());
             }
 
            return (EpsonConfigurations)DoDeserialize(filename);
@@ -149,19 +149,23 @@ public class MainActivity extends FragmentActivity implements
         getLoaderManager().initLoader(0, null, this);
 
 
-        //SaveConfigurations("Configurations.cfg", new EpsonConfigurations("Teste"));
+        //SaveConfigurations("Configurations.cfg", new EpsonConfigurations());
         EpsonConfigurations configs=(EpsonConfigurations) LoadConfigurations("Configurations.cfg");
 
+        if (configs!=null){
+            if (configs.getEpsons().size()==0){
+                configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
+            }
+        }
+        SaveConfigurations("Configurations.cfg", configs); 
+//        Epson epsons[] = new Epson[]
+//
+//                {
+//                        new Epson(R.drawable.robot, "MGB Gear Wheels","PC432-Automacao")
+//
+//                };
 
-
-        Epson epsons[] = new Epson[]
-
-                {
-                        new Epson(R.drawable.robot, "MGB Gear Wheels","PC432-Automacao")
-
-                };
-
-        Propriedades.getInstance().setEpsons(epsons);
+        Propriedades.getInstance().setEpsons(configs.getEpsons());
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.

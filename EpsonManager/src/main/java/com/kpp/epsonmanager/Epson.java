@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 
-public class Epson {
+import java.io.Serializable;
+
+public class Epson implements Serializable{
     public int icon;
     private String title;
 

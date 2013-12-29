@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.7.+'
 
     }
 }
@@ -18,13 +18,12 @@ android {
     buildToolsVersion '18.1.0'
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 18
+        minSdkVersion 9
+        targetSdkVersion 17
     }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:+'
-    //releaseCompile 'com.google.code.gson:gson:2.2.4'
-    //compile files('libs/gson-2.2.4.jar')
+    compile files('libs/sidemenu.jar')
 }

@@ -2,6 +2,8 @@ package com.kpp.epsonmanager;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+
 /**
  * Created by Geral on 14-10-2013.
  */
@@ -42,7 +44,7 @@ public class Propriedades  {
         return mInstance;
     }
 
-    private Epson[] Epsons;
+    private ArrayList<Epson> Epsons;
 
     private Epson SelectedEpson=null;
 
@@ -57,11 +59,11 @@ public class Propriedades  {
         }
     }
 
-    public Epson[] getEpsons() {
+    public ArrayList<Epson> getEpsons() {
         return Epsons;
     }
 
-    public void setEpsons(Epson[] epsons) {
+    public void setEpsons(ArrayList<Epson> epsons) {
         Epsons = epsons;
     }
 }

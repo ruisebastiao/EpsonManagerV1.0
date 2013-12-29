@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sidemenu">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/EpsonManager/libs/sidemenu.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

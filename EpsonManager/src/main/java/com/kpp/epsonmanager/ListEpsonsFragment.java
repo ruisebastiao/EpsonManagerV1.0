@@ -44,8 +44,13 @@ public class ListEpsonsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_epsons, container, false);
+        Epson[] mEpsonArray = new Epson[Propriedades.getInstance().getEpsons().size()];
+        mEpsonArray = Propriedades.getInstance().getEpsons().toArray(mEpsonArray);
+
+
+        //Epson[] epsons= (Epson[])Propriedades.getInstance().getEpsons().toArray();
             final EpsonListAdapter adapter = new EpsonListAdapter(getActivity(),
-                    R.layout.epson_item_row,(Propriedades.getInstance().getEpsons()));
+                    R.layout.epson_item_row,(mEpsonArray));
 
 
             ListEpsons = (ListView)rootView.findViewById(R.id.listViewEpsons);
@@ -57,7 +62,7 @@ public class ListEpsonsFragment extends Fragment {
             ListEpsons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Epson selected=Propriedades.getInstance().getEpsons()[position];
+                    Epson selected=Propriedades.getInstance().getEpsons().get(position);
 
                     Propriedades.getInstance().setSelectedEpson(selected);
                     if (selected.getmOnEpsonStatusChanged()==null)
