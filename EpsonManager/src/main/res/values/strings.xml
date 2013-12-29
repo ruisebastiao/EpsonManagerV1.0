@@ -8,6 +8,7 @@
     <string name="waitman">Activar manutenção remota</string>
     <string name="waitmanok">Espera confirmação remota</string>
     <string name="title_section_epson_status">Estado</string>
+    <string name="menu_settings">Settings</string>
 
     <string-array name="pontos">
         <item>Ponto 1</item>
