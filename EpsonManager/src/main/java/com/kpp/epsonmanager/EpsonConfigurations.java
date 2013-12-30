@@ -15,11 +15,11 @@ public  class EpsonConfigurations implements Serializable {
 
 
     public EpsonConfigurations(){
-
+        Epsons= new ArrayList<Epson>();
     }
 
 
-    private ArrayList<Epson> Epsons= new ArrayList<Epson>();
+    private ArrayList<Epson> Epsons;
 
     public ArrayList<Epson> getEpsons() {
         return Epsons;
