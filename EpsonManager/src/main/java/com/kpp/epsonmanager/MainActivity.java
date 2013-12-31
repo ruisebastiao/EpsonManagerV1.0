@@ -15,20 +15,27 @@ import java.util.Locale;
 
 
 import android.annotation.SuppressLint;
+
+import android.app.ActionBar;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
-import org.json.*;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Window;
+
 
 public class MainActivity extends FragmentActivity implements
         LoaderManager.LoaderCallbacks<SharedPreferences> {
@@ -145,7 +152,10 @@ public class MainActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
+
+
         getLoaderManager().initLoader(0, null, this);
 
 
@@ -157,7 +167,7 @@ public class MainActivity extends FragmentActivity implements
                 configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
             }
         }
-        SaveConfigurations("Configurations.cfg", configs); 
+        //SaveConfigurations("Configurations.cfg", configs);
 //        Epson epsons[] = new Epson[]
 //
 //                {
@@ -212,9 +222,28 @@ public class MainActivity extends FragmentActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+
+        // When using the support library, the setOnActionExpandListener() method is
+        // static and accepts the MenuItem object as an argument
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
     
     

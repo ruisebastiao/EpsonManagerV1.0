@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Epson Manager</string>
+    <string name="app_name">KPP Epson Manager</string>
     <string name="action_settings">Settings</string>
     <string name="title_section_ligacoes">Ligações</string>
     <string name="title_section_epson_selected"></string>
@@ -9,6 +9,7 @@
     <string name="waitmanok">Espera confirmação remota</string>
     <string name="title_section_epson_status">Estado</string>
     <string name="menu_settings">Settings</string>
+    <string name="action_search">Save</string>
 
     <string-array name="pontos">
         <item>Ponto 1</item>
