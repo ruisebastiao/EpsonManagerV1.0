@@ -9,7 +9,7 @@
     <string name="waitmanok">Espera confirmação remota</string>
     <string name="title_section_epson_status">Estado</string>
     <string name="menu_settings">Settings</string>
-    <string name="action_search">Save</string>
+    <string name="action_save">Save</string>
 
     <string-array name="pontos">
         <item>Ponto 1</item>

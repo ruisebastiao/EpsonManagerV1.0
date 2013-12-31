@@ -35,6 +35,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 
 public class MainActivity extends FragmentActivity implements
@@ -112,9 +115,17 @@ public class MainActivity extends FragmentActivity implements
 
     }
 
+    private String configfilename="";
+
+    public void SaveConfigurations(){
+        if (configs!=null){
+            SaveConfigurations(configfilename,configs);
+        }
+    }
     public void SaveConfigurations(String filename, Object saveObject){
         try
         {
+
             FileOutputStream fos=getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos); //Select where you wish to save the file...
             oos.writeObject(saveObject); // write the class as an 'object'
@@ -129,10 +140,12 @@ public class MainActivity extends FragmentActivity implements
 
     }
 
+    private EpsonConfigurations configs=null;
     public EpsonConfigurations LoadConfigurations(String filename){
         try {
 
             File file =  getApplicationContext().getFileStreamPath(filename);
+            configfilename=filename;
             if(file.exists()){
  
             }
@@ -155,12 +168,29 @@ public class MainActivity extends FragmentActivity implements
         //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
 
+//        ActionBar bar=getActionBar();
+//        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//
+//        SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.action_list,
+//                android.R.layout.simple_spinner_dropdown_item);
+//
+//        bar.setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
+//            // Get the same strings provided for the drop-down's ArrayAdapter
+//            String[] strings = getResources().getStringArray(R.array.action_list);
+//
+//            @Override
+//            public boolean onNavigationItemSelected(int position, long itemId) {
+//
+//
+//                return true;
+//            }
+//        });
 
         getLoaderManager().initLoader(0, null, this);
 
 
         //SaveConfigurations("Configurations.cfg", new EpsonConfigurations());
-        EpsonConfigurations configs=(EpsonConfigurations) LoadConfigurations("Configurations.cfg");
+        configs=(EpsonConfigurations) LoadConfigurations("Configurations.cfg");
 
         if (configs!=null){
             if (configs.getEpsons().size()==0){
@@ -219,29 +249,28 @@ public class MainActivity extends FragmentActivity implements
 
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_save:
 
+                SaveConfigurations();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_settings);
 
-        // When using the support library, the setOnActionExpandListener() method is
-        // static and accepts the MenuItem object as an argument
-        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Do something when collapsed
-                return true;  // Return true to collapse action view
-            }
 
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // Do something when expanded
-                return true;  // Return true to expand action view
-            }
-        });
+
 
         return super.onCreateOptionsMenu(menu);
     }
