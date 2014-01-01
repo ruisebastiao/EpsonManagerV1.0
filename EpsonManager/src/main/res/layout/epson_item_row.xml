@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
 <GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
@@ -12,7 +13,7 @@
     android:layoutMode="clipBounds"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:columnCount="5"
-    android:rowCount="6"
+    android:rowCount="8"
     android:useDefaultMargins="true">
 
     <ImageView android:id="@+id/imgIcon"
