@@ -28,7 +28,7 @@
 
     <style name="ActionBarText" parent="@android:style/TextAppearance">
         <item name="android:textColor">#ff000000</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 

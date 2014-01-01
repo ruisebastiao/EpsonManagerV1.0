@@ -198,17 +198,10 @@ public class MainActivity extends FragmentActivity implements
             }
         }
         //SaveConfigurations("Configurations.cfg", configs);
-//        Epson epsons[] = new Epson[]
-//
-//                {
-//                        new Epson(R.drawable.robot, "MGB Gear Wheels","PC432-Automacao")
-//
-//                };
+
 
         Propriedades.getInstance().setEpsons(configs.getEpsons());
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the app.
 
 
         // Set up the ViewPager with the sections adapter.

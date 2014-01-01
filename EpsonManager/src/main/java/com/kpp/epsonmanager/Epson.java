@@ -7,31 +7,30 @@ import android.view.View;
 import java.io.Serializable;
 
 public class Epson implements Serializable{
-    public int icon;
+
+
     private String title;
-
-    private String Hostname2;
     private String Hostname;
-    private boolean Connected=false;
-    private TCPClient mTcpClient;
-    private OnEpsonStatusChanged mOnEpsonStatusChanged = null;
 
-    private boolean ManMode=false;
-
-    private boolean RobotConneted=false;
-
-
-    public OnEpsonStatusChanged getmOnEpsonStatusChanged() {
-        return mOnEpsonStatusChanged;
-    }
-
-    public void setmOnEpsonStatusChanged(OnEpsonStatusChanged mOnEpsonStatusChanged) {
-        this.mOnEpsonStatusChanged = mOnEpsonStatusChanged;
-    }
+    public transient int icon;
+    private transient Epson self=this;
+    private transient boolean Connected=false;
+    private transient TCPClient mTcpClient;
+    private transient OnEpsonStatusChanged mOnEpsonStatusChanged = null;
+    private transient boolean ManMode=false;
+    private transient boolean RobotConneted=false;
 
     public TCPClient getTcpClient() {
         return mTcpClient;
     }
+    public OnEpsonStatusChanged getmOnEpsonStatusChanged() {
+        return mOnEpsonStatusChanged;
+    }
+    public void setmOnEpsonStatusChanged(OnEpsonStatusChanged mOnEpsonStatusChanged) {
+        this.mOnEpsonStatusChanged = mOnEpsonStatusChanged;
+    }
+
+
 
     public boolean isManMode() {
         return ManMode;
@@ -74,7 +73,7 @@ public class Epson implements Serializable{
         this.icon = icon;
         this.setTitle(title);
         this.Hostname=hostname;
-        this.Hostname2="";
+
     }
 
     @Override
@@ -98,7 +97,6 @@ public class Epson implements Serializable{
         Hostname = hostname;
     }
 
-    private Epson self=this;
 
     public class OnEpsonStatusChangedEventArgs{
 

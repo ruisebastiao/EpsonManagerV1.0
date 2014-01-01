@@ -55,6 +55,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
             holder.txtHostname = (TextView)row.findViewById(R.id.txtHostname);
             holder.nome_switcher=(ViewSwitcher)row.findViewById(R.id.nome_switcher);
+            holder.hostname_switcher=(ViewSwitcher)row.findViewById(R.id.Hostname_Switcher);
 
             row.setTag(holder);
         }
@@ -65,20 +66,79 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
         final Epson epson = data[position];
 
+
+
+        final TextView txtHostname=holder.txtHostname;
+        holder.txtHostname.setText(epson.getHostname());
+
+
+        holder.txtHostname.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+
+                final ViewSwitcher switcher = holder.hostname_switcher;
+
+
+                final EditText hostname_in = (EditText) switcher.findViewById(R.id.hidden_hostname);
+
+                hostname_in.setText(txtHostname.getText());
+                hostname_in.setFocusable(true);
+                hostname_in.setFocusableInTouchMode(true);
+                hostname_in.setClickable(true);
+
+
+                hostname_in.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        //holder.txtTitle.setText(Integer.toString(keyCode));
+                        //switcher.showPrevious();
+                        if (keyCode==13 || keyCode==66){
+
+                            epson.setHostname(hostname_in.getText().toString());
+                            txtHostname.setText(epson.getHostname());
+                            switcher.showPrevious();
+                            txtHostname.requestFocus();
+                            InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(txtHostname.getWindowToken(), 0);
+                        }
+                        else if(keyCode == KeyEvent.KEYCODE_BACK){
+                            // Toast.makeText(v.getContext(),String.valueOf("Back"), Toast.LENGTH_LONG).show();
+                            switcher.showPrevious();
+                            txtHostname.requestFocus();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                hostname_in.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if(hasFocus){
+                            hostname_in.setSelection(hostname_in.getText().length());
+                            InputMethodManager imm =(InputMethodManager)((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(hostname_in, 0);
+                        }else {
+                            //switcher.showPrevious();
+                        }
+                    }
+                });
+
+                switcher.showNext(); //or switcher.showPrevious();
+                hostname_in.requestFocus();
+                return  false;
+            }
+        });
+
+
+
         final TextView txtTitle=holder.txtTitle;
 
         holder.txtTitle.setText(epson.getTitle());
+
         holder.txtTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-////                InputMethodManager imm = (InputMethodManager) context.getSystemService(Service.INPUT_METHOD_SERVICE);
-////                imm.showSoftInput(txtTitle, 0);
-////                txtTitle.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-//                txtTitle.setTextIsSelectable(true);
-//                txtTitle.setFocusable(true);
-//
-                //txtTitle.setBackgroundColor(context.getResources().getColor(android.R.color.holo_orange_light));
-
 
 
                 final ViewSwitcher switcher = holder.nome_switcher;
@@ -87,7 +147,6 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
                 final EditText nome_in = (EditText) switcher.findViewById(R.id.hidden_nome);
 
                 nome_in.setText(txtTitle.getText());
-                nome_in.setFocusable(true);
                 nome_in.setFocusable(true);
                 nome_in.setFocusableInTouchMode(true);
                 nome_in.setClickable(true);
@@ -134,7 +193,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
                 return  false;
             }
         });
-        holder.txtHostname.setText(epson.getHostname());
+
         holder.imgIcon.setImageResource(epson.icon);
 
         if(epson.isConnected()){
@@ -144,34 +203,6 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             holder.imgConnected.setImageResource(R.drawable.img_disc);
         }
 
-        //Propriedades.getInstance().setSelectedEpson(epson);
-//
-//        row.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Propriedades.getInstance().setSelectedEpson(epson);
-//
-//            }
-//        });
-//
-//        holder.imgIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Propriedades.getInstance().setSelectedEpson(epson);
-////                v.setBackgroundColor(Color.parseColor("#6E94FF"));
-//
-//            }
-//        });
-//        holder.txtTitle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                v.setBackgroundResource(0);
-////                v.setBackgroundResource(android.R.color.holo_green_light);
-//                Propriedades.getInstance().setSelectedEpson(epson);
-//
-//
-//            }
-//        });
 
         return row;
 
@@ -186,5 +217,6 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
         TextView txtTitle;
         TextView txtHostname;
         ViewSwitcher nome_switcher;
+        ViewSwitcher hostname_switcher;
     }
 }
