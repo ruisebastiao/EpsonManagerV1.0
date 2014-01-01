@@ -57,6 +57,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             holder.nome_switcher=(ViewSwitcher)row.findViewById(R.id.nome_switcher);
             holder.hostname_switcher=(ViewSwitcher)row.findViewById(R.id.Hostname_Switcher);
 
+
             row.setTag(holder);
         }
         else
