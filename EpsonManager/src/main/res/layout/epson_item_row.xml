@@ -43,51 +43,16 @@
         android:longClickable="false"
         android:adjustViewBounds="false" />
 
-    <ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/Hostname_Switcher"
+    <TextView
+        android:id="@+id/txtHostname"
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_row="1"
-        android:layout_column="1"
-        android:layout_margin="0dp"
-        android:animateFirstView="true"
-        android:layout_columnSpan="2" >
-
-        <TextView
-            android:id="@+id/txtHostname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:hint="Nome não definido"
-            android:text="Hostname não definido"
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/hidden_hostname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:hint="Nome não definido"
-            android:inputType="text"
-            android:textSize="15dp" />
-    </ViewSwitcher>
-
-    <ViewSwitcher
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/nome_switcher"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:gravity="center_vertical"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_margin="0dp"
-        android:animateFirstView="true"
-        android:layout_columnSpan="2">
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:hint="Nome não definido"
+        android:text="Hostname não definido"
+        android:textSize="15dp" />
 
     <TextView android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
@@ -98,18 +63,6 @@
         android:textColor="#000000"
         android:hint="Nome não definido"
         />
-     <EditText
-            android:id="@+id/hidden_nome"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:gravity="center_vertical"
-         android:textStyle="bold"
-         android:textColor="#000000"
-         android:hint="Nome não definido"
-         android:inputType="text"
-         android:singleLine="true"
-         android:textSize="15dp" />
-    </ViewSwitcher>
 
 </GridLayout>
 
