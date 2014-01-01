@@ -58,6 +58,18 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             holder.hostname_switcher=(ViewSwitcher)row.findViewById(R.id.Hostname_Switcher);
 
             row.setTag(holder);
+                    teste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                teste.setFocusable(true);
+                teste.setFocusableInTouchMode(true);
+                teste.requestFocusFromTouch();
+                teste.requestFocus();
+                teste.setFocusable(false);
+                teste.setFocusableInTouchMode(false);
+            }
+        });
+
         }
         else
         {
