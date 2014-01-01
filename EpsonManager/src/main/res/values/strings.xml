@@ -10,6 +10,7 @@
     <string name="title_section_epson_status">Estado</string>
     <string name="menu_settings">Definições</string>
     <string name="action_save">Salvar</string>
+    <string name="tv_label">Novo nome:</string>
 
     <string-array name="pontos">
         <item>Ponto 1</item>

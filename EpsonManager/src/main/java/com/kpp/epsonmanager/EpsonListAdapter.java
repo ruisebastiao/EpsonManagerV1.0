@@ -1,10 +1,12 @@
 package com.kpp.epsonmanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.LauncherActivity;
 import android.app.Service;
 import android.content.Context;
 
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -41,6 +43,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
 
+        final Epson epson = data[position];
 
         if(row == null)
         {
@@ -54,18 +57,59 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             holder.imgConnected = (ImageView)row.findViewById(R.id.imgEpsonConnected);
             holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
             holder.txtHostname = (TextView)row.findViewById(R.id.txtHostname);
-            holder.nome_switcher=(ViewSwitcher)row.findViewById(R.id.nome_switcher);
-            holder.hostname_switcher=(ViewSwitcher)row.findViewById(R.id.Hostname_Switcher);
+
 
 
             row.setTag(holder);
+
+            holder.txtTitle.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    // get prompts.xml view
+                    LayoutInflater layoutInflater = LayoutInflater.from(context);
+
+                    View promptView = layoutInflater.inflate(R.layout.prompts, null);
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                    // set prompts.xml to be the layout file of the alertdialog builder
+                    alertDialogBuilder.setView(promptView);
+
+                    final EditText input = (EditText) promptView.findViewById(R.id.input_edit_text);
+
+                    // setup a dialog window
+                    alertDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // get user input and set it to result
+                                    epson.setTitle(input.getText().toString());
+                                }
+                            })
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,	int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                    // create an alert dialog
+                    AlertDialog alertD = alertDialogBuilder.create();
+
+                    alertD.show();
+
+                    return true;
+                }
+            });
+
+
         }
         else
         {
             holder = (EpsonHolder)row.getTag();
         }
 
-        final Epson epson = data[position];
+
 
 
 
@@ -90,17 +134,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
 //        final EditText teste=(EditText)row.findViewById(R.id.teste);
 //
-//        teste.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                teste.setFocusable(true);
-//                teste.setFocusableInTouchMode(true);
-//                teste.requestFocusFromTouch();
-//                teste.requestFocus();
-//                teste.setFocusable(false);
-//                teste.setFocusableInTouchMode(false);
-//            }
-//        });
+
 
         return row;
 
@@ -114,7 +148,6 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
         ImageView imgConnected;
         TextView txtTitle;
         TextView txtHostname;
-        ViewSwitcher nome_switcher;
-        ViewSwitcher hostname_switcher;
+
     }
 }
