@@ -103,12 +103,23 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
         holder.imgIcon.setImageResource(epson.icon);
 
+
+
         if(epson.isConnected()){
             holder.imgConnected.setImageResource(R.drawable.img_conn);
         }
         else{
             holder.imgConnected.setImageResource(R.drawable.img_disc);
         }
+
+        holder.imgConnected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (epson.isConnected()==false)
+
+                    epson.setConnected();
+            }
+        });
 
         final ArrayAdapter listadapter=this;
         holder.txtTitle.setOnLongClickListener(new View.OnLongClickListener() {
@@ -151,6 +162,48 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
                 return true;
             }
         });
+
+        holder.txtHostname.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                // get prompts.xml view
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+
+                View promptView = layoutInflater.inflate(R.layout.prompts, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                // set prompts.xml to be the layout file of the alertdialog builder
+                alertDialogBuilder.setView(promptView);
+
+                final EditText input = (EditText) promptView.findViewById(R.id.input_edit_text);
+                input.setText(epson.getHostname());
+                // setup a dialog window
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // get user input and set it to result
+                                epson.setHostname(input.getText().toString());
+                                listadapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create an alert dialog
+                AlertDialog alertD = alertDialogBuilder.create();
+
+                alertD.show();
+
+                return true;
+            }
+        });
+
 
 //        final EditText teste=(EditText)row.findViewById(R.id.teste);
 //

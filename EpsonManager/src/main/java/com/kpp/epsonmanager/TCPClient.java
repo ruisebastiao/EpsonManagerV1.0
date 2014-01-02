@@ -9,9 +9,9 @@ import java.net.Socket;
 public class TCPClient {
 
     private String serverMessage;
-    public static final String SERVERIP = "PC413-LMONTAGEM26.keyeu.keyplastics.local"; //your computer IP address
+    public String SERVERIP = "PC413-LMONTAGEM26.keyeu.keyplastics.local"; //your computer IP address
     //public static final String SERVERIP = "PC432-Automacao"; //your computer IP address
-    public static final int SERVERPORT = 9620;
+    public int SERVERPORT = 9620;
     private OnMessageReceived mMessageListener = null;
     private OnClientConnected mClientconnectedListner = null;
     private OnClientDisconnected mClientDisconnectedListner= null;

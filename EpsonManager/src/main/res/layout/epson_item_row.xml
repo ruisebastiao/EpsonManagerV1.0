@@ -42,7 +42,8 @@
         android:src="@drawable/img_disc"
         android:baselineAlignBottom="false"
         android:longClickable="false"
-        android:adjustViewBounds="false" />
+        android:adjustViewBounds="false"
+        android:clickable="false" />
 
     <TextView
         android:id="@+id/txtHostname"

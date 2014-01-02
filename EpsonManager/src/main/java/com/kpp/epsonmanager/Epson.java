@@ -86,7 +86,12 @@ public class Epson implements Serializable{
     }
 
     public void setConnected() {
-        new connectTask().execute("");
+        if (mTcpClient.SERVERIP.equals(Hostname)==false){
+            if (mTcpClient!=null){
+                mTcpClient.SERVERIP=Hostname;
+            }
+        }
+        new connectTask().execute();
     }
 
     public String getHostname() {
@@ -95,6 +100,9 @@ public class Epson implements Serializable{
 
     public void setHostname(String hostname) {
         Hostname = hostname;
+        if (mTcpClient!=null){
+            mTcpClient.SERVERIP=hostname;
+        }
     }
 
 
