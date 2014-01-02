@@ -168,23 +168,6 @@ public class MainActivity extends FragmentActivity implements
         //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
 
-//        ActionBar bar=getActionBar();
-//        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-//
-//        SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.action_list,
-//                android.R.layout.simple_spinner_dropdown_item);
-//
-//        bar.setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
-//            // Get the same strings provided for the drop-down's ArrayAdapter
-//            String[] strings = getResources().getStringArray(R.array.action_list);
-//
-//            @Override
-//            public boolean onNavigationItemSelected(int position, long itemId) {
-//
-//
-//                return true;
-//            }
-//        });
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -242,6 +225,7 @@ public class MainActivity extends FragmentActivity implements
 
 
     }
+    Fragment selectedfrag=null;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -249,6 +233,38 @@ public class MainActivity extends FragmentActivity implements
             case R.id.action_save:
 
                 SaveConfigurations();
+
+                return true;
+            case R.id.action_addrb:
+
+                configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
+                selectedfrag=mEpsonPagerAdapter.getItem(mEpsonViewPager.getCurrentItem());
+
+                if (selectedfrag!=null) {
+                    if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
+                        if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
+                            ((ListEpsonsFragment)selectedfrag).EpsonsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+
+                return true;
+            case R.id.action_delrb:
+
+
+                selectedfrag=mEpsonPagerAdapter.getItem(mEpsonViewPager.getCurrentItem());
+
+                if (selectedfrag!=null) {
+                    if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
+                        if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
+
+                            configs.getEpsons().remove(Propriedades.getInstance().getSelectedEpson());
+                            ((ListEpsonsFragment)selectedfrag).EpsonsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
 
                 return true;
 
@@ -299,7 +315,7 @@ public class MainActivity extends FragmentActivity implements
             this.notifyDataSetChanged();
         }
 
-
+        public ArrayAdapter<Epson> EpsonsAdapter=null;
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -319,7 +335,15 @@ public class MainActivity extends FragmentActivity implements
             if (position>=mFragments.size())
                 return null;
 
-            return mFragments.get(position);
+            Fragment selectedfrag=mFragments.get(position);
+
+//            if (selectedfrag!=null) {
+//                if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
+//                    EpsonsAdapter=((ListEpsonsFragment)selectedfrag).EpsonsAdapter;
+//                }
+//            }
+
+            return selectedfrag;
 
             //return mFragments.get(position);
         }

@@ -11,6 +11,8 @@
     <string name="menu_settings">Definições</string>
     <string name="action_save">Salvar</string>
     <string name="tv_label">Novo nome:</string>
+    <string name="action_add">Adicionar Robot</string>
+    <string name="action_rmrb">Apagar robot</string>
 
     <string-array name="pontos">
         <item>Ponto 1</item>

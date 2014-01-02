@@ -8,8 +8,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="10dp"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
     android:layoutMode="clipBounds"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:columnCount="5"
@@ -28,7 +28,8 @@
         android:src="@drawable/robot"
         android:layout_row="0"
         android:layout_column="0"
-        android:layout_rowSpan="2" />
+        android:layout_rowSpan="2"
+        android:layout_gravity="center_vertical" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -54,7 +55,9 @@
         android:text="Hostname não definido"
         android:textSize="15dp"
         android:layout_column="1"
-        android:layout_row="1" />
+        android:layout_row="1"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="0dp" />
 
     <TextView android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
@@ -66,7 +69,8 @@
         android:hint="Nome não definido"
         android:focusableInTouchMode="false"
         android:layout_column="1"
-        android:layout_row="0" />
+        android:layout_row="0"
+        android:layout_gravity="center_horizontal" />
 
 </GridLayout>
 
