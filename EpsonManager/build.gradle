@@ -26,7 +26,4 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile files('libs/sidemenu.jar')
-    compile files('libs/socketio.jar')
-    compile files('libs/androidasync-1.2.0.jar')
-    compile files('libs/kryo-2.20.jar')
 }

@@ -208,34 +208,35 @@ public class Epson implements Serializable{
                         }
                     }
 
-                    else if (strlist[0].equals("SET")){
-                       if (strlist[1].equals("MANMODE")){
-                           EpsonStateFragment.progresswaitman.setVisibility(View.GONE);
-                           EpsonStateFragment.progresswaitman.setEnabled(false);
-                           if (strlist[2].equals("OK")){
-                               EpsonStateFragment.manbt.setText("Ligado");
-                               MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
+                    else {
+                        if (strlist[0].equals("SET")) {
+                            if (strlist[1].equals("MANMODE")) {
+                                EpsonStateFragment.progresswaitman.setVisibility(View.GONE);
+                                EpsonStateFragment.progresswaitman.setEnabled(false);
+                                if (strlist[2].equals("OK")) {
+                                    //EpsonStateFragment.manbt.setText("Ligado");
+                                    EpsonStateFragment.manbt.setChecked(true);
+                                    MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
+                                    MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
+                                    setManMode(true);
+                                } else {
+                                    setManMode(false);
+                                    //EpsonStateFragment.manbt.setText("Ligado");
+                                    EpsonStateFragment.manbt.setChecked(false);
+                                    MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
+                                }
+                            } else if (strlist[1].equals("POINTLIST")) {
 
-                               MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
-                               setManMode(true);
+                                EpsonPontosFragment.ListPointsAdapter.clear();
+                                for (int i = 2; i < strlist.length; i++) {
+                                    EpsonPontosFragment.ListPointsAdapter.add(strlist[i]);
+                                }
 
-                           }
-                           else{
-                               setManMode(false);
-                               MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
-                           }
-                       }
-                       else if(strlist[1].equals("POINTLIST")){
+                                EpsonPontosFragment.ListPointsAdapter.notifyDataSetChanged();
 
-                           EpsonPontosFragment.ListPointsAdapter.clear();
-                           for(int i=2;i<strlist.length;i++){
-                               EpsonPontosFragment.ListPointsAdapter.add(strlist[i]);
-                           }
-
-                           EpsonPontosFragment.ListPointsAdapter.notifyDataSetChanged();
-
-                       }
-                   }
+                            }
+                        }
+                    }
                 }
 
             //in the arrayList we add the messaged received from server
