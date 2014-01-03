@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +39,8 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+
+
 
 
 public class MainActivity extends FragmentActivity implements
@@ -110,6 +113,7 @@ public class MainActivity extends FragmentActivity implements
         }
         catch (IOException e){
             e.printStackTrace();
+            SaveConfigurations("Configurations.cfg", new EpsonConfigurations());
         }
         return o;
 
@@ -177,7 +181,7 @@ public class MainActivity extends FragmentActivity implements
 
         if (configs!=null){
             if (configs.getEpsons().size()==0){
-                configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
+                configs.getEpsons().add(new Epson(R.drawable.robot, "New Robot", "127.0.0.1"));
             }
         }
         //SaveConfigurations("Configurations.cfg", configs);

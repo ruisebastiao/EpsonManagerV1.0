@@ -9,9 +9,12 @@ import java.net.Socket;
 public class TCPClient {
 
     private String serverMessage;
-    public String SERVERIP = "PC413-LMONTAGEM26.keyeu.keyplastics.local"; //your computer IP address
-    //public static final String SERVERIP = "PC432-Automacao"; //your computer IP address
-    public int SERVERPORT = 9620;
+    private String ServerIP;
+
+            //= "PC413-LMONTAGEM26.keyeu.keyplastics.local"; //your computer IP address
+
+    private int ServerPORT; //= 9620;
+
     private OnMessageReceived mMessageListener = null;
     private OnClientConnected mClientconnectedListner = null;
     private OnClientDisconnected mClientDisconnectedListner= null;
@@ -24,7 +27,9 @@ public class TCPClient {
     /**
      *  Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    public TCPClient(OnMessageReceived listener,OnClientConnected ClientconnectedListner) {
+    public TCPClient(String IP,int Port,OnMessageReceived listener,OnClientConnected ClientconnectedListner) {
+        ServerIP=IP;
+        ServerPORT=Port;
         mMessageListener = listener;
         mClientconnectedListner=ClientconnectedListner;
     }
@@ -42,20 +47,25 @@ public class TCPClient {
 
     public void stopClient(){
         mRun = false;
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
+    Socket socket=null;
     public void run() {
 
         mRun = true;
 
         try {
             //here you must put your computer's IP address.
-            InetAddress serverAddr = InetAddress.getByName(SERVERIP);
+            InetAddress serverAddr = InetAddress.getByName(ServerIP);
 
             Log.e("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, SERVERPORT);
+            socket = new Socket(serverAddr, ServerPORT);
 
             if (mClientconnectedListner!= null) {
                 //call the method messageReceived from MyActivity class
@@ -100,11 +110,18 @@ public class TCPClient {
             } finally {
                 //the socket must be closed. It is not possible to reconnect to this socket
                 // after it is closed, which means a new socket instance has to be created.
+                if (getClientDisconnectedListner() != null) {
+                    //call the method messageReceived from MyActivity class
+                    getClientDisconnectedListner().clientDisconnected();
+                }
                 socket.close();
             }
 
         } catch (Exception e) {
-
+            if (getClientDisconnectedListner() != null) {
+                //call the method messageReceived from MyActivity class
+                getClientDisconnectedListner().clientDisconnected();
+            }
             Log.e("TCP", "C: Error", e);
 
         }

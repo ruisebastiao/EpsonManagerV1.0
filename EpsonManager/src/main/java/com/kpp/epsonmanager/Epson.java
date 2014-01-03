@@ -8,13 +8,13 @@ import java.io.Serializable;
 
 public class Epson implements Serializable{
 
+    private static final long serialVersionUID = 1;
 
     private String title;
     private String Hostname;
 
     public transient int icon;
-    private transient Epson self=this;
-    private transient boolean Connected=false;
+
     private transient TCPClient mTcpClient;
     private transient OnEpsonStatusChanged mOnEpsonStatusChanged = null;
     private transient boolean ManMode=false;
@@ -31,6 +31,7 @@ public class Epson implements Serializable{
     }
 
 
+    private transient boolean isConnected=false;
 
     public boolean isManMode() {
         return ManMode;
@@ -40,13 +41,7 @@ public class Epson implements Serializable{
         ManMode = manMode;
     }
 
-    public boolean isRobotConneted() {
-        return RobotConneted;
-    }
 
-    private void setRobotConneted(boolean robotConneted) {
-        RobotConneted = robotConneted;
-    }
 
     public String getTitle() {
         return title;
@@ -54,6 +49,22 @@ public class Epson implements Serializable{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    private void setConnected(boolean isConnected) {
+        this.isConnected = isConnected;
+        if (isConnected){
+            if (getmOnEpsonStatusChanged() !=null){
+                getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this,"Client Connected"));
+
+            }
+        }
+        else{
+            if (getmOnEpsonStatusChanged() !=null){
+                getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this,"Client Disconnected"));
+
+            }
+        }
     }
 
 
@@ -66,6 +77,8 @@ public class Epson implements Serializable{
 
     public Epson(){
         super();
+
+
     }
 
     public Epson(int icon, String title,String hostname) {
@@ -82,16 +95,15 @@ public class Epson implements Serializable{
     }
 
     public boolean isConnected() {
-        return Connected;
+        return isConnected;
     }
 
-    public void setConnected() {
-        if (mTcpClient.SERVERIP.equals(Hostname)==false){
-            if (mTcpClient!=null){
-                mTcpClient.SERVERIP=Hostname;
-            }
+    public void setRobotConnected(Boolean state) {
+        if (state){
+            new connectTask().execute();
         }
-        new connectTask().execute();
+        else
+            mTcpClient.stopClient();
     }
 
     public String getHostname() {
@@ -100,9 +112,7 @@ public class Epson implements Serializable{
 
     public void setHostname(String hostname) {
         Hostname = hostname;
-        if (mTcpClient!=null){
-            mTcpClient.SERVERIP=hostname;
-        }
+
     }
 
 
@@ -125,13 +135,15 @@ public class Epson implements Serializable{
             return mStatus;
         }
     }
+
     public class connectTask extends AsyncTask<String,String,TCPClient> {
 
         @Override
         protected TCPClient doInBackground(String... message) {
 
+
             //we create a TCPClient object and
-            mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
+            mTcpClient = new TCPClient(Hostname,9620,new TCPClient.OnMessageReceived() {
                 @Override
                 //here the messageReceived method is implemented
                 public void messageReceived(String message) {
@@ -142,24 +154,21 @@ public class Epson implements Serializable{
             new TCPClient.OnClientConnected() {
                 @Override
                 public void clientConnected() {
-                    Connected=true;
-                    if (getmOnEpsonStatusChanged() !=null){
-                        getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(self,"Client Connected"));
+                    setConnected(true);
 
-                    }
                 }
             });
-            mTcpClient.run();
+
+
             mTcpClient.setClientDisconnectedListner(new TCPClient.OnClientDisconnected() {
                 @Override
                 public void clientDisconnected() {
-                    self.Connected=false;
-                    if (getmOnEpsonStatusChanged() !=null){
-                        getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(self,"Client Disconnected"));
+                    setConnected(false);
 
-                    }
                 }
             });
+            mTcpClient.run();
+
             return null;
         }
 
@@ -174,7 +183,7 @@ public class Epson implements Serializable{
                         if(strlist[1].equals("CONNECTED")){
                             EpsonStateFragment.txtRbState.setText("Robot Ligado");
                             EpsonStateFragment.manbt.setEnabled(true);
-                            setRobotConneted(true);
+                            //setRobotConneted(true);
                         }
                         else if(strlist[1].equals("DISCONNECTED")){
 
@@ -184,7 +193,7 @@ public class Epson implements Serializable{
                                 MainActivity.mEpsonViewPager.setCurrentItem( MainActivity.mEpsonViewPager.getCurrentItem()-1);
                             }
                             MainActivity.mEpsonPagerAdapter.RemoveFragment(2);
-                            setRobotConneted(false);
+                            //setRobotConneted(false);
                         }
                         else if(strlist[1].equals("RB")){
                             EpsonStateFragment.txtRbMsg.setText(strlist[2]);
@@ -200,11 +209,11 @@ public class Epson implements Serializable{
                                MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
 
                                MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
-                               self.setManMode(true);
+                               //mEpson.setManMode(true);
 
                            }
                            else{
-                               self.setManMode(false);
+                               //mEpson.setManMode(false);
                                MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                            }
                        }

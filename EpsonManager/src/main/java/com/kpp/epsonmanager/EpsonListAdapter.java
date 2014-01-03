@@ -24,8 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
 
 public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
@@ -115,9 +117,9 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
         holder.imgConnected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (epson.isConnected()==false)
 
-                    epson.setConnected();
+                    epson.setRobotConnected(!epson.isConnected());
+
             }
         });
 
