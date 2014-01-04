@@ -216,12 +216,13 @@ public class Epson implements Serializable{
                                 if (strlist[2].equals("OK")) {
                                     //EpsonStateFragment.manbt.setText("Ligado");
                                     EpsonStateFragment.manbt.setChecked(true);
+                                    EpsonStateFragment.manbt.setText("Ligado");
                                     MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
                                     MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                                     setManMode(true);
                                 } else {
                                     setManMode(false);
-                                    //EpsonStateFragment.manbt.setText("Ligado");
+
                                     EpsonStateFragment.manbt.setChecked(false);
                                     MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                                 }

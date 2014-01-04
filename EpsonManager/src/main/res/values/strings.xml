@@ -6,7 +6,7 @@
     <string name="title_section_ligacoes">Ligações</string>
     <string name="title_section_epson_selected"></string>
     <string name="waitman">Activar manutenção remota</string>
-    <string name="waitmanok">Ligado</string>
+    <string name="waitmanok">Espera confirmação</string>
     <string name="title_section_epson_status">Estado</string>
     <string name="menu_settings">Definições</string>
     <string name="action_save">Salvar</string>

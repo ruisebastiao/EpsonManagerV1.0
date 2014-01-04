@@ -241,7 +241,7 @@ public class MainActivity extends FragmentActivity implements
                 return true;
             case R.id.action_addrb:
 
-                configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
+                configs.getEpsons().add(new Epson(R.drawable.robot, "New Robot", "127.0.0.1"));
                 selectedfrag=mEpsonPagerAdapter.getItem(mEpsonViewPager.getCurrentItem());
 
                 if (selectedfrag!=null) {

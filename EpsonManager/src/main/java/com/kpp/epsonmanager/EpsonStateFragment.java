@@ -56,7 +56,7 @@ public class EpsonStateFragment extends Fragment {
                 if(manbt.isChecked()==true){
                     Epson selected=Propriedades.getInstance().getSelectedEpson();
                     selected.getTcpClient().sendMessage("SET|MANMODE");
-                   // progresswaitman.setVisibility(View.VISIBLE);
+                    progresswaitman.setVisibility(View.VISIBLE);
                 }
             }
         });
