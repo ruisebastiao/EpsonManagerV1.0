@@ -22,7 +22,7 @@ public class ListEpsonsFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private ListView ListEpsons;
+    public ListView ListEpsons;
 
 
 //    public  static  ArrayAdapter<String> ListPointsAdapter=null;
@@ -39,20 +39,20 @@ public class ListEpsonsFragment extends Fragment {
 
     }
 
-
+    public  EpsonListAdapter EpsonsAdapter=null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_epsons, container, false);
-        Epson[] mEpsonArray = new Epson[Propriedades.getInstance().getEpsons().size()];
-        mEpsonArray = Propriedades.getInstance().getEpsons().toArray(mEpsonArray);
+
+
 
 
         //Epson[] epsons= (Epson[])Propriedades.getInstance().getEpsons().toArray();
             final EpsonListAdapter adapter = new EpsonListAdapter(getActivity(),
-                    R.layout.epson_item_row,(mEpsonArray));
+                    R.layout.epson_item_row,(Propriedades.getInstance().getEpsons()));
 
-
+            EpsonsAdapter=adapter;
             ListEpsons = (ListView)rootView.findViewById(R.id.listViewEpsons);
 
             //View header = (View)inflater.inflate(R.layout.epsons_header, null);
@@ -62,6 +62,7 @@ public class ListEpsonsFragment extends Fragment {
             ListEpsons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    ListEpsons.setSelection(position);
                     Epson selected=Propriedades.getInstance().getEpsons().get(position);
 
                     Propriedades.getInstance().setSelectedEpson(selected);
@@ -92,21 +93,25 @@ public class ListEpsonsFragment extends Fragment {
                             }
                         });
 
-                    if (selected.isConnected()==false)
-                        selected.setConnected();
-                    else{
-                        selected.getTcpClient().stopClient();
+//                    if (selected.isConnected()==false)
+//                        selected.setConnected();
+//                    else{
+//                        selected.getTcpClient().stopClient();
+//
+//                    }
 
-                    }
 
 
-
-                    view.setBackgroundColor(Color.parseColor("#FEF0D4"));
+                    //view.setBackgroundColor(Color.parseColor("#FEF0D4"));
                 }
             });
 
 
-
+        int mActivePosition=0;
+        ListEpsons.performItemClick(
+                ListEpsons.getAdapter().getView(mActivePosition, null, null),
+                mActivePosition,
+                ListEpsons.getAdapter().getItemId(mActivePosition));
 
         //TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
         //dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));

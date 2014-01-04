@@ -78,7 +78,14 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Epson selected=Propriedades.getInstance().getSelectedEpson();
-                selected.getTcpClient().sendMessage("JUMPTO|POINT|"+spinnerPontos.getSelectedItem().toString());
+                try {
+
+                    if (spinnerPontos.getSelectedItem()!=null) {
+                        selected.getTcpClient().sendMessage("JUMPTO|POINT|"+spinnerPontos.getSelectedItem().toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

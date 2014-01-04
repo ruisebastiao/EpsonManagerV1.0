@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="kryo-2.20">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/EpsonManager/libs/kryo-2.20.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
