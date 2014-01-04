@@ -58,6 +58,7 @@ public class ListEpsonsFragment extends Fragment {
             //View header = (View)inflater.inflate(R.layout.epsons_header, null);
             //ListEpsons.addHeaderView(header);
 
+
             ListEpsons.setAdapter(adapter);
             ListEpsons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
