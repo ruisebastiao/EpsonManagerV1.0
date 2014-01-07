@@ -83,6 +83,7 @@ public class ListEpsonsFragment extends Fragment {
                                 else if (args.getState()== Epson.ConnectionState.DISCONNECTED){
                                     getActivity().runOnUiThread(new Runnable() {
                                         public void run() {
+
                                             MainActivity.mEpsonViewPager.setPagingEnabled(false);
                                             MainActivity.mEpsonViewPager.setCurrentItem(0);
                                             adapter.notifyDataSetChanged();
