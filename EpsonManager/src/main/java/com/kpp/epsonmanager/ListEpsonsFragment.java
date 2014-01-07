@@ -71,7 +71,6 @@ public class ListEpsonsFragment extends Fragment {
                         selected.setmOnEpsonStatusChanged(new Epson.OnEpsonStatusChanged() {
                             @Override
                             public void EpsonStatusChanged(Epson.OnEpsonStatusChangedEventArgs args) {
-
                                 if (args.getState()== Epson.ConnectionState.CONNECTED){
                                         getActivity().runOnUiThread(new Runnable() {
                                         public void run() {
