@@ -58,6 +58,7 @@ public class ListEpsonsFragment extends Fragment {
             //View header = (View)inflater.inflate(R.layout.epsons_header, null);
             //ListEpsons.addHeaderView(header);
 
+
             ListEpsons.setAdapter(adapter);
             ListEpsons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -71,8 +72,7 @@ public class ListEpsonsFragment extends Fragment {
                         selected.setmOnEpsonStatusChanged(new Epson.OnEpsonStatusChanged() {
                             @Override
                             public void EpsonStatusChanged(Epson.OnEpsonStatusChangedEventArgs args) {
-
-                                if (args.getmStatus()=="Client Connected"){
+                                if (args.getState()== Epson.ConnectionState.CONNECTED){
                                         getActivity().runOnUiThread(new Runnable() {
                                         public void run() {
                                             MainActivity.mEpsonViewPager.setPagingEnabled(true);
@@ -81,11 +81,20 @@ public class ListEpsonsFragment extends Fragment {
                                         }
                                     });
                                 }
-                                else if (args.getmStatus()=="Client Disconnected"){
+                                else if (args.getState()== Epson.ConnectionState.DISCONNECTED){
                                     getActivity().runOnUiThread(new Runnable() {
                                         public void run() {
+
                                             MainActivity.mEpsonViewPager.setPagingEnabled(false);
                                             MainActivity.mEpsonViewPager.setCurrentItem(0);
+                                            adapter.notifyDataSetChanged();
+
+                                        }
+                                    });
+                                }
+                                else if (args.getState()== Epson.ConnectionState.CONNECTING){
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
                                             adapter.notifyDataSetChanged();
 
                                         }

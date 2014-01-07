@@ -1,6 +1,7 @@
 package com.kpp.epsonmanager;
 
-import android.app.Application;
+import android.app.Activity;
+import android.content.Context;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,15 @@ public class Propriedades  {
 
     private static Propriedades mInstance= null;
 
+    protected Activity mainactivity;
+
+    public void SetMainActivity(Activity acivity){
+        this.mainactivity = acivity;
+    }
+
+    public Activity GetMainActivity(){
+        return this.mainactivity;
+    }
 
     protected Propriedades(){}
 

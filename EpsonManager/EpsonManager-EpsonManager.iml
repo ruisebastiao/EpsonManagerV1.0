@@ -71,11 +71,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 18 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
-    <orderEntry type="library" exported="" name="androidasync-1.2.0" level="project" />
-    <orderEntry type="library" exported="" name="kryo-2.20" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-19.0.0" level="project" />
     <orderEntry type="library" exported="" name="sidemenu" level="project" />
-    <orderEntry type="library" exported="" name="socketio" level="project" />
   </component>
 </module>
 

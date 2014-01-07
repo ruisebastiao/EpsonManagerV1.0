@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,30 +15,21 @@ import java.util.Locale;
 
 import android.annotation.SuppressLint;
 
-import android.app.ActionBar;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-
-
 
 
 public class MainActivity extends FragmentActivity implements
@@ -183,12 +172,13 @@ public class MainActivity extends FragmentActivity implements
             if (configs.getEpsons().size()==0){
                 configs.getEpsons().add(new Epson(R.drawable.robot, "New Robot", "127.0.0.1"));
             }
+
         }
         //SaveConfigurations("Configurations.cfg", configs);
 
 
         Propriedades.getInstance().setEpsons(configs.getEpsons());
-
+        Propriedades.getInstance().SetMainActivity(this);
 
 
         // Set up the ViewPager with the sections adapter.
@@ -202,6 +192,7 @@ public class MainActivity extends FragmentActivity implements
 
         mEpsonPagerAdapter.AddFragment(new ListEpsonsFragment());
         mEpsonPagerAdapter.AddFragment(new EpsonStateFragment());
+        mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
         mEpsonPagerAdapter.notifyDataSetChanged();
 
         Propriedades.getInstance().setHandlerListener(new Propriedades.NewEpsonSelectedListener() {
@@ -214,7 +205,7 @@ public class MainActivity extends FragmentActivity implements
 
 
 
-                    if (selected.isConnected()){
+                    if (selected.getStat()== Epson.ConnectionState.CONNECTED){
                         mEpsonViewPager.setPagingEnabled(true);
                     }
                     else{
@@ -241,11 +232,11 @@ public class MainActivity extends FragmentActivity implements
                 return true;
             case R.id.action_addrb:
 
-                configs.getEpsons().add(new Epson(R.drawable.robot, "MGB Gear Wheels", "PC432-Automacao"));
+                configs.getEpsons().add(new Epson(R.drawable.robot, "New Robot", "127.0.0.1"));
                 selectedfrag=mEpsonPagerAdapter.getItem(mEpsonViewPager.getCurrentItem());
 
                 if (selectedfrag!=null) {
-                    if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
+                    if (selectedfrag instanceof ListEpsonsFragment){
                         if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
                             ((ListEpsonsFragment)selectedfrag).EpsonsAdapter.notifyDataSetChanged();
                         }
@@ -260,7 +251,7 @@ public class MainActivity extends FragmentActivity implements
                 selectedfrag=mEpsonPagerAdapter.getItem(mEpsonViewPager.getCurrentItem());
 
                 if (selectedfrag!=null) {
-                    if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
+                    if (selectedfrag instanceof ListEpsonsFragment){
                         if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
 
                             configs.getEpsons().remove(Propriedades.getInstance().getSelectedEpson());

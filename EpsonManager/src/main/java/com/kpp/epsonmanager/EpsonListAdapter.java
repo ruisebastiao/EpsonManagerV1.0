@@ -2,29 +2,17 @@ package com.kpp.epsonmanager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.LauncherActivity;
-import android.app.Service;
 import android.content.Context;
 
 import android.content.DialogInterface;
-import android.text.Editable;
-import android.text.InputType;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -57,9 +45,11 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
     }
 
     private EpsonHolder holder = null;
+    public static View SelectedRow =null;
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
+
 
         final Epson epson = data.get(position);
 
@@ -81,7 +71,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             row.setTag(holder);
             //this.notifyDataSetInvalidated();
 
-
+            SelectedRow =row;
 
 
         }
@@ -91,6 +81,14 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
         }
 
 
+        ViewSwitcher switcher= (ViewSwitcher) EpsonListAdapter.SelectedRow.findViewById(R.id.connectswitcher);
+        if (switcher!=null){
+            if ((switcher.getCurrentView() !=  EpsonListAdapter.SelectedRow.findViewById(R.id.frameIcon))&& epson.getStat()!= Epson.ConnectionState.CONNECTING){
+                switcher.showPrevious();
+            } else if (((switcher.getCurrentView() !=  EpsonListAdapter.SelectedRow.findViewById(R.id.connect_load))) && epson.getStat()==Epson.ConnectionState.CONNECTING){
+                switcher.showNext();
+            }
+        }
 
 
 
@@ -107,7 +105,7 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
 
 
 
-        if(epson.isConnected()){
+        if(epson.getStat()== Epson.ConnectionState.CONNECTED){
             holder.imgConnected.setImageResource(R.drawable.img_conn);
         }
         else{
@@ -118,7 +116,11 @@ public class EpsonListAdapter extends ArrayAdapter<Epson> {
             @Override
             public void onClick(View view) {
 
-                    epson.setRobotConnected(!epson.isConnected());
+//                ViewSwitcher switcher= (ViewSwitcher) SelectedRow.findViewById(R.id.connectswitcher);
+//                if (switcher!=null){
+//                    switcher.showNext();
+//                }
+                epson.setRobotConnected(!(epson.getStat()== Epson.ConnectionState.CONNECTED));
 
             }
         });

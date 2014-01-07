@@ -18,8 +18,8 @@ import android.widget.Spinner;
 public class EpsonPontosFragment extends Fragment implements View.OnClickListener {
 
 
-    public static Spinner spinnerPontos=null;
-    public static ArrayAdapter<String> ListPointsAdapter=null;
+    public  Spinner spinnerPontos=null;
+
 
     private String title="Pontos";
 
@@ -66,8 +66,8 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
 
         spinnerPontos=(Spinner)rootView.findViewById(R.id.spinnerPontos);
 
-        ListPointsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item);
-        spinnerPontos.setAdapter(ListPointsAdapter);
+        Propriedades.getInstance().getSelectedEpson().ListPointsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item);
+        spinnerPontos.setAdapter(Propriedades.getInstance().getSelectedEpson().ListPointsAdapter);
 
 
         Button savebt=(Button)rootView.findViewById(R.id.btsavept);
@@ -78,7 +78,14 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Epson selected=Propriedades.getInstance().getSelectedEpson();
-                selected.getTcpClient().sendMessage("JUMPTO|POINT|"+spinnerPontos.getSelectedItem().toString());
+                try {
+
+                    if (spinnerPontos.getSelectedItem()!=null) {
+                        selected.getTcpClient().sendMessage("JUMPTO|POINT|"+spinnerPontos.getSelectedItem().toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
