@@ -18,7 +18,7 @@ public class Epson implements Serializable{
     private transient TCPClient mTcpClient;
     private transient OnEpsonStatusChanged mOnEpsonStatusChanged = null;
     private transient boolean ManMode=false;
-    private transient boolean RobotConneted=false;
+    private transient boolean RobotOnline=false;
 
     public TCPClient getTcpClient() {
         return mTcpClient;
@@ -54,17 +54,25 @@ public class Epson implements Serializable{
     private void setConnected(boolean isConnected) {
         this.isConnected = isConnected;
         if (isConnected){
-            if (getmOnEpsonStatusChanged() !=null){
-                getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this,"Client Connected"));
+            if (mOnEpsonStatusChanged!=null){
+                mOnEpsonStatusChanged.EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this, "Client Connected"));
 
             }
         }
         else{
-            if (getmOnEpsonStatusChanged() !=null){
-                getmOnEpsonStatusChanged().EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this,"Client Disconnected"));
+            if (mOnEpsonStatusChanged!=null){
+                mOnEpsonStatusChanged.EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this, "Client Disconnected"));
 
             }
         }
+    }
+
+    public boolean isRobotOnline() {
+        return RobotOnline;
+    }
+
+    private void setRobotOnline(boolean robotOnline) {
+        RobotOnline = robotOnline;
     }
 
 
@@ -183,7 +191,7 @@ public class Epson implements Serializable{
                         if(strlist[1].equals("CONNECTED")){
                             EpsonStateFragment.txtRbState.setText("Robot Ligado");
                             EpsonStateFragment.manbt.setEnabled(true);
-                            //setRobotConneted(true);
+                            setRobotOnline(true);
                         }
                         else if(strlist[1].equals("DISCONNECTED")){
 
@@ -193,7 +201,7 @@ public class Epson implements Serializable{
                                 MainActivity.mEpsonViewPager.setCurrentItem( MainActivity.mEpsonViewPager.getCurrentItem()-1);
                             }
                             MainActivity.mEpsonPagerAdapter.RemoveFragment(2);
-                            //setRobotConneted(false);
+                            setRobotOnline(false);
                         }
                         else if(strlist[1].equals("RB")){
                             EpsonStateFragment.txtRbMsg.setText(strlist[2]);
@@ -209,11 +217,11 @@ public class Epson implements Serializable{
                                MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
 
                                MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
-                               //mEpson.setManMode(true);
+                               setManMode(true);
 
                            }
                            else{
-                               //mEpson.setManMode(false);
+                               setManMode(false);
                                MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                            }
                        }
