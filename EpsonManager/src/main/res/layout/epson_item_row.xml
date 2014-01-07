@@ -31,19 +31,51 @@
         android:layout_rowSpan="2"
         android:layout_gravity="center_vertical" />
 
-    <ImageView
+    <ViewSwitcher
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imgEpsonConnected"
+        android:id="@+id/connectswitcher"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_row="0"
         android:layout_column="4"
         android:layout_rowSpan="2"
-        android:layout_columnSpan="1"
-        android:src="@drawable/img_disc"
-        android:baselineAlignBottom="false"
-        android:longClickable="false"
-        android:adjustViewBounds="false"
-        android:clickable="false" />
+        android:layout_gravity="right">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/frameIcon">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgEpsonConnected"
+                android:layout_row="0"
+                android:layout_column="4"
+                android:layout_rowSpan="2"
+                android:layout_columnSpan="1"
+                android:src="@drawable/img_disc"
+                android:baselineAlignBottom="false"
+                android:longClickable="false"
+                android:adjustViewBounds="false"
+                android:clickable="false" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/loadingframe">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/connect_load"
+                android:indeterminate="true" />
+
+        </FrameLayout>
+
+    </ViewSwitcher>
 
     <TextView
         android:id="@+id/txtHostname"

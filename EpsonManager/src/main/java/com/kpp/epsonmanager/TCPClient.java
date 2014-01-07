@@ -2,8 +2,11 @@ package com.kpp.epsonmanager;
 
 import android.util.Log;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 
 public class TCPClient {
@@ -18,6 +21,8 @@ public class TCPClient {
     private OnMessageReceived mMessageListener = null;
     private OnClientConnected mClientconnectedListner = null;
     private OnClientDisconnected mClientDisconnectedListner= null;
+
+    private OnConnectionError mOnConnectionError=null;
 
     private boolean mRun = false;
 
@@ -65,7 +70,9 @@ public class TCPClient {
             Log.e("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            socket = new Socket(serverAddr, ServerPORT);
+            //socket = new Socket(serverAddr, ServerPORT);
+            socket=new Socket();
+            socket.connect(new InetSocketAddress(ServerIP,ServerPORT),2000);
 
             if (mClientconnectedListner!= null) {
                 //call the method messageReceived from MyActivity class
@@ -95,9 +102,9 @@ public class TCPClient {
                     serverMessage = null;
 
                 }
-                if (getClientDisconnectedListner() != null) {
+                if (mClientDisconnectedListner != null) {
                     //call the method messageReceived from MyActivity class
-                    getClientDisconnectedListner().clientDisconnected();
+                    mClientDisconnectedListner.clientDisconnected();
                 }
 
 
@@ -112,15 +119,28 @@ public class TCPClient {
                 // after it is closed, which means a new socket instance has to be created.
                 if (getClientDisconnectedListner() != null) {
                     //call the method messageReceived from MyActivity class
-                    getClientDisconnectedListner().clientDisconnected();
+                    mClientDisconnectedListner.clientDisconnected();
                 }
                 socket.close();
             }
 
-        } catch (Exception e) {
-            if (getClientDisconnectedListner() != null) {
+        }
+        catch (ConnectException e){
+            if (mOnConnectionError != null) {
                 //call the method messageReceived from MyActivity class
-                getClientDisconnectedListner().clientDisconnected();
+                mOnConnectionError.ConnectionError(e.toString());
+            }
+        }
+        catch (SocketTimeoutException e){
+            if (mOnConnectionError != null) {
+                //call the method messageReceived from MyActivity class
+                mOnConnectionError.ConnectionError(e.toString());
+            }
+        }
+        catch (Exception e) {
+            if (mClientDisconnectedListner != null) {
+                //call the method messageReceived from MyActivity class
+                mClientDisconnectedListner.clientDisconnected();
             }
             Log.e("TCP", "C: Error", e);
 
@@ -136,6 +156,14 @@ public class TCPClient {
         this.mClientDisconnectedListner = clientDisconnectedListner;
     }
 
+    public OnConnectionError getmOnConnectionError() {
+        return mOnConnectionError;
+    }
+
+    public void setmOnConnectionError(OnConnectionError mOnConnectionError) {
+        this.mOnConnectionError = mOnConnectionError;
+    }
+
     //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
     //class at on asynckTask doInBackground
     public interface OnMessageReceived {
@@ -147,6 +175,9 @@ public class TCPClient {
         public void clientDisconnected();
     }
 
+    public interface OnConnectionError {
+        public void ConnectionError(String ErrorMessage);
+    }
 
     public interface OnClientConnected {
         public void clientConnected();

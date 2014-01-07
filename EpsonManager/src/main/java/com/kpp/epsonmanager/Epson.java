@@ -3,10 +3,43 @@ package com.kpp.epsonmanager;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
+
 public class Epson implements Serializable{
+
+    public ConnectionState getStat() {
+        return mStat;
+    }
+
+    private void setStat(ConnectionState mStat) {
+
+        this.mStat = mStat;
+
+
+        if (mOnEpsonStatusChanged!=null){
+            mOnEpsonStatusChanged.EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this,mStat));
+        }
+
+    }
+
+    public enum ConnectionState{
+        DISCONNECTED(0),
+        CONNECTED(1),
+        CONNECTING(2),
+        ;
+
+        private final int id;
+
+        ConnectionState(int id) { this.id = id;}
+
+        public int getValue() { return id; }
+    }
 
     private static final long serialVersionUID = 1;
 
@@ -20,6 +53,8 @@ public class Epson implements Serializable{
     private transient boolean ManMode=false;
     private transient boolean RobotOnline=false;
 
+    protected transient ConnectionState mStat = ConnectionState.DISCONNECTED;
+
     public TCPClient getTcpClient() {
         return mTcpClient;
     }
@@ -31,7 +66,8 @@ public class Epson implements Serializable{
     }
 
 
-    private transient boolean isConnected=false;
+    public transient ArrayAdapter<String> ListPointsAdapter=null;
+
 
     public boolean isManMode() {
         return ManMode;
@@ -51,22 +87,6 @@ public class Epson implements Serializable{
         this.title = title;
     }
 
-    private void setConnected(boolean isConnected) {
-        this.isConnected = isConnected;
-        if (isConnected){
-            if (mOnEpsonStatusChanged!=null){
-                mOnEpsonStatusChanged.EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this, "Client Connected"));
-
-            }
-        }
-        else{
-            if (mOnEpsonStatusChanged!=null){
-                mOnEpsonStatusChanged.EpsonStatusChanged(new OnEpsonStatusChangedEventArgs(this, "Client Disconnected"));
-
-            }
-        }
-    }
-
     public boolean isRobotOnline() {
         return RobotOnline;
     }
@@ -83,10 +103,16 @@ public class Epson implements Serializable{
 
     private OnEpsonStatusChanged mEpsonStatusChangedListner = null;
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        mStat=ConnectionState.DISCONNECTED;
+
+    }
+
     public Epson(){
         super();
-
-
+        mStat=ConnectionState.DISCONNECTED;
     }
 
     public Epson(int icon, String title,String hostname) {
@@ -94,7 +120,7 @@ public class Epson implements Serializable{
         this.icon = icon;
         this.setTitle(title);
         this.Hostname=hostname;
-
+        mStat=ConnectionState.DISCONNECTED;
     }
 
     @Override
@@ -102,13 +128,11 @@ public class Epson implements Serializable{
         return this.getTitle();
     }
 
-    public boolean isConnected() {
-        return isConnected;
-    }
-
     public void setRobotConnected(Boolean state) {
         if (state){
-            new connectTask().execute();
+            if (mStat == ConnectionState.DISCONNECTED){
+                new connectTask().execute();
+            }
         }
         else
             mTcpClient.stopClient();
@@ -128,25 +152,34 @@ public class Epson implements Serializable{
 
 
         private Epson mEpson=null;
-        private  String mStatus="";
+        private ConnectionState mState=null;
 
-        public  OnEpsonStatusChangedEventArgs(Epson epson,String status){
+        public  OnEpsonStatusChangedEventArgs(Epson epson,ConnectionState state){
             mEpson=epson;
-            mStatus=status;
+            mState=state;
         }
 
-        public Epson getmEpson() {
+        public Epson getEpson() {
             return mEpson;
         }
+        public  ConnectionState getState(){return mState;}
 
-        public String getmStatus() {
-            return mStatus;
-        }
+
     }
 
     public class connectTask extends AsyncTask<String,String,TCPClient> {
 
-        @Override
+
+        protected void onPostExecute(TCPClient result) {
+            if (result!=null){
+
+            }
+        }
+
+
+
+
+
         protected TCPClient doInBackground(String... message) {
 
 
@@ -162,22 +195,35 @@ public class Epson implements Serializable{
             new TCPClient.OnClientConnected() {
                 @Override
                 public void clientConnected() {
-                    setConnected(true);
-
+                    setStat(ConnectionState.CONNECTED);
                 }
             });
 
+            mTcpClient.setmOnConnectionError(new TCPClient.OnConnectionError() {
+                @Override
+                public void ConnectionError(String ErrorMessage) {
 
+                    final String message=ErrorMessage;
+                    Propriedades.getInstance().GetMainActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(Propriedades.getInstance().GetMainActivity(), String.valueOf(message), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    setStat(ConnectionState.DISCONNECTED);
+
+                }
+            });
             mTcpClient.setClientDisconnectedListner(new TCPClient.OnClientDisconnected() {
                 @Override
                 public void clientDisconnected() {
-                    setConnected(false);
-
+                    setStat(ConnectionState.DISCONNECTED);
                 }
             });
+            setStat(ConnectionState.CONNECTING);
             mTcpClient.run();
 
-            return null;
+            return mTcpClient;
         }
 
         @Override
@@ -185,12 +231,14 @@ public class Epson implements Serializable{
             super.onProgressUpdate(values);
                 String strval=values[0];
 
+
                 String[] strlist=TextUtils.split(strval, "\\|");
                 if (strlist.length>0){
                     if(strlist[0].equals("STATUS")){
                         if(strlist[1].equals("CONNECTED")){
                             EpsonStateFragment.txtRbState.setText("Robot Ligado");
                             EpsonStateFragment.manbt.setEnabled(true);
+
                             setRobotOnline(true);
                         }
                         else if(strlist[1].equals("DISCONNECTED")){
@@ -214,10 +262,9 @@ public class Epson implements Serializable{
                                 EpsonStateFragment.progresswaitman.setVisibility(View.GONE);
                                 EpsonStateFragment.progresswaitman.setEnabled(false);
                                 if (strlist[2].equals("OK")) {
-                                    //EpsonStateFragment.manbt.setText("Ligado");
+
                                     EpsonStateFragment.manbt.setChecked(true);
                                     EpsonStateFragment.manbt.setText("Ligado");
-                                    MainActivity.mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
                                     MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                                     setManMode(true);
                                 } else {
@@ -228,12 +275,12 @@ public class Epson implements Serializable{
                                 }
                             } else if (strlist[1].equals("POINTLIST")) {
 
-                                EpsonPontosFragment.ListPointsAdapter.clear();
+                                Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.clear();
                                 for (int i = 2; i < strlist.length; i++) {
-                                    EpsonPontosFragment.ListPointsAdapter.add(strlist[i]);
+                                    Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.add(strlist[i]);
                                 }
 
-                                EpsonPontosFragment.ListPointsAdapter.notifyDataSetChanged();
+                                Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.notifyDataSetChanged();
 
                             }
                         }

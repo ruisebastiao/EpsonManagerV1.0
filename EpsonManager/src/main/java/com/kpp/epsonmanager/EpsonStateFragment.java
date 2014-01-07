@@ -39,14 +39,6 @@ public class EpsonStateFragment extends Fragment {
         txtRbState =(TextView)rootView.findViewById(R.id.textRbState);
         txtRbMsg=(TextView)rootView.findViewById(R.id.textMsgRb);
         manbt.setEnabled(false);
-//            spinnerPontos=(Spinner)rootView.findViewById(R.id.spinnerPontos);
-//
-//            ListPointsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item);
-//            spinnerPontos.setAdapter(ListPointsAdapter);
-
-//            ListPointsAdapter = new ArrayAdapter(this.getActivity(),
-//                    android.R.layout.simpe,R.array.pontos);
-//            spinnerPontos.setAdapter(ListPointsAdapter);
 
 
         progresswaitman.setVisibility(View.GONE);
