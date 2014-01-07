@@ -65,6 +65,7 @@ public class ListEpsonsFragment extends Fragment {
                     ListEpsons.setSelection(position);
                     Epson selected=Propriedades.getInstance().getEpsons().get(position);
 
+
                     Propriedades.getInstance().setSelectedEpson(selected);
                     if (selected.getmOnEpsonStatusChanged()==null)
                         selected.setmOnEpsonStatusChanged(new Epson.OnEpsonStatusChanged() {
