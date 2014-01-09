@@ -1,7 +1,6 @@
 package com.kpp.epsonmanager;
 
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -14,12 +13,12 @@ import java.io.Serializable;
 public class Epson implements Serializable{
 
     public ConnectionState getStat() {
-        return mStat;
+        return mConnectionState;
     }
 
     private void setStat(ConnectionState mStat) {
 
-        this.mStat = mStat;
+        this.mConnectionState = mStat;
 
 
         if (mOnEpsonStatusChanged!=null){
@@ -41,6 +40,31 @@ public class Epson implements Serializable{
         public int getValue() { return id; }
     }
 
+    public enum RobotManState{
+        MANMODEOFF(0),
+        MANMODEON(1),
+        WAITMANMODEON(2),
+        ;
+
+        private final int id;
+
+        RobotManState(int id) { this.id = id;}
+
+        public int getValue() { return id; }
+    }
+
+    public enum RobotState{
+        OFFLINE(0),
+        ONLINE(0),
+        ;
+
+        private final int id;
+
+        RobotState(int id) { this.id = id;}
+
+        public int getValue() { return id; }
+    }
+
     private static final long serialVersionUID = 1;
 
     private String title;
@@ -50,10 +74,11 @@ public class Epson implements Serializable{
 
     private transient TCPClient mTcpClient;
     private transient OnEpsonStatusChanged mOnEpsonStatusChanged = null;
-    private transient boolean ManMode=false;
-    private transient boolean RobotOnline=false;
+    protected transient RobotState mRobotState=RobotState.OFFLINE;
+    protected transient RobotManState mRobotManState=RobotManState.MANMODEOFF;
 
-    protected transient ConnectionState mStat = ConnectionState.DISCONNECTED;
+
+    protected transient ConnectionState mConnectionState = ConnectionState.DISCONNECTED;
 
     public TCPClient getTcpClient() {
         return mTcpClient;
@@ -65,16 +90,20 @@ public class Epson implements Serializable{
         this.mOnEpsonStatusChanged = mOnEpsonStatusChanged;
     }
 
-
-    public transient ArrayAdapter<String> ListPointsAdapter=null;
-
-
-    public boolean isManMode() {
-        return ManMode;
+    public RobotManState getRobotManState() {
+        return mRobotManState;
     }
 
-    private void setManMode(boolean manMode) {
-        ManMode = manMode;
+    private void setRobotManState(RobotManState state) {
+        mRobotManState =state;
+    }
+
+    public RobotState getRobotState() {
+        return mRobotState;
+    }
+
+    private void setRobotState(RobotState state) {
+        mRobotState =state;
     }
 
 
@@ -87,13 +116,6 @@ public class Epson implements Serializable{
         this.title = title;
     }
 
-    public boolean isRobotOnline() {
-        return RobotOnline;
-    }
-
-    private void setRobotOnline(boolean robotOnline) {
-        RobotOnline = robotOnline;
-    }
 
 
     public interface OnEpsonStatusChanged
@@ -106,13 +128,14 @@ public class Epson implements Serializable{
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        mStat=ConnectionState.DISCONNECTED;
-
+        mConnectionState =ConnectionState.DISCONNECTED;
+        mRobotState=RobotState.OFFLINE;
+        mRobotManState=RobotManState.MANMODEOFF;
     }
 
     public Epson(){
         super();
-        mStat=ConnectionState.DISCONNECTED;
+        mConnectionState =ConnectionState.DISCONNECTED;
     }
 
     public Epson(int icon, String title,String hostname) {
@@ -120,7 +143,7 @@ public class Epson implements Serializable{
         this.icon = icon;
         this.setTitle(title);
         this.Hostname=hostname;
-        mStat=ConnectionState.DISCONNECTED;
+        mConnectionState =ConnectionState.DISCONNECTED;
     }
 
     @Override
@@ -130,7 +153,7 @@ public class Epson implements Serializable{
 
     public void setRobotConnected(Boolean state) {
         if (state){
-            if (mStat == ConnectionState.DISCONNECTED){
+            if (mConnectionState == ConnectionState.DISCONNECTED){
                 new connectTask().execute();
             }
         }
@@ -232,55 +255,47 @@ public class Epson implements Serializable{
                 String strval=values[0];
 
 
-                String[] strlist=TextUtils.split(strval, "\\|");
+                String[] strlist=strval.split("\\|");
                 if (strlist.length>0){
                     if(strlist[0].equals("STATUS")){
                         if(strlist[1].equals("CONNECTED")){
-                            EpsonStateFragment.txtRbState.setText("Robot Ligado");
-                            EpsonStateFragment.manbt.setEnabled(true);
 
-                            setRobotOnline(true);
+
+                            setRobotState(RobotState.ONLINE);
+                            MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                         }
                         else if(strlist[1].equals("DISCONNECTED")){
 
-                            EpsonStateFragment.txtRbState.setText("Robot Desligado");
-                            EpsonStateFragment.manbt.setEnabled(false);
-                            if (MainActivity.mEpsonViewPager.getCurrentItem()>1){
-                                MainActivity.mEpsonViewPager.setCurrentItem( MainActivity.mEpsonViewPager.getCurrentItem()-1);
-                            }
-                            MainActivity.mEpsonPagerAdapter.RemoveFragment(2);
-                            setRobotOnline(false);
+
+                            setRobotState(RobotState.OFFLINE);
+                            MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                         }
                         else if(strlist[1].equals("RB")){
-                            EpsonStateFragment.txtRbMsg.setText(strlist[2]);
+                            //EpsonStateFragment.txtRbMsg.setText(strlist[2]);
                         }
                     }
 
                     else {
                         if (strlist[0].equals("SET")) {
                             if (strlist[1].equals("MANMODE")) {
-                                EpsonStateFragment.progresswaitman.setVisibility(View.GONE);
-                                EpsonStateFragment.progresswaitman.setEnabled(false);
+
                                 if (strlist[2].equals("OK")) {
 
-                                    EpsonStateFragment.manbt.setChecked(true);
-                                    EpsonStateFragment.manbt.setText("Ligado");
+                                    setRobotManState(RobotManState.MANMODEON);
                                     MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
-                                    setManMode(true);
-                                } else {
-                                    setManMode(false);
 
-                                    EpsonStateFragment.manbt.setChecked(false);
+                                } else {
+                                    setRobotManState(RobotManState.MANMODEOFF);
                                     MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
                                 }
                             } else if (strlist[1].equals("POINTLIST")) {
 
-                                Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.clear();
+                                ((ArrayAdapter<String>)(MainActivity.mEpsonPontosFragment.mSpinnerPontos.getAdapter())).clear();
                                 for (int i = 2; i < strlist.length; i++) {
-                                    Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.add(strlist[i]);
+                                    ((ArrayAdapter<String>)(MainActivity.mEpsonPontosFragment.mSpinnerPontos.getAdapter())).add(strlist[i]);
                                 }
 
-                                Propriedades.getInstance().getSelectedEpson().ListPointsAdapter.notifyDataSetChanged();
+                                ((ArrayAdapter<String>)(MainActivity.mEpsonPontosFragment.mSpinnerPontos.getAdapter())).notifyDataSetChanged();
 
                             }
                         }

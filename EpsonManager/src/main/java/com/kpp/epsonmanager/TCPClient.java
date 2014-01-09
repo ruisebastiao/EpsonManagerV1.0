@@ -102,12 +102,6 @@ public class TCPClient {
                     serverMessage = null;
 
                 }
-                if (mClientDisconnectedListner != null) {
-                    //call the method messageReceived from MyActivity class
-                    mClientDisconnectedListner.clientDisconnected();
-                }
-
-
 
 
             } catch (Exception e) {
@@ -138,9 +132,9 @@ public class TCPClient {
             }
         }
         catch (Exception e) {
-            if (mClientDisconnectedListner != null) {
+            if (mOnConnectionError != null) {
                 //call the method messageReceived from MyActivity class
-                mClientDisconnectedListner.clientDisconnected();
+                mOnConnectionError.ConnectionError(e.toString());
             }
             Log.e("TCP", "C: Error", e);
 
@@ -164,8 +158,7 @@ public class TCPClient {
         this.mOnConnectionError = mOnConnectionError;
     }
 
-    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
-    //class at on asynckTask doInBackground
+
     public interface OnMessageReceived {
         public void messageReceived(String message);
     }

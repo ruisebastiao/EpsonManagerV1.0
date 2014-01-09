@@ -13,15 +13,15 @@ import android.widget.ToggleButton;
  * Created by Geral on 16-10-2013.
  */
 
-public class EpsonStateFragment extends Fragment {
+public class EpsonStateFragment extends Fragment implements View.OnClickListener{
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
-    public static ProgressBar progresswaitman=null;
-    public static ToggleButton manbt=null;
-    public static TextView txtRbState=null;
-    public static TextView txtRbMsg=null;
+    public  ProgressBar progresswaitman=null;
+    public  ToggleButton manbt=null;
+    public  TextView txtRbState=null;
+    public  TextView txtRbMsg=null;
 
 
 
@@ -29,30 +29,73 @@ public class EpsonStateFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    public void UpdateContents(){
+
+    }
+
+    private Epson mEpsonSelected;
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_epsonstate, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_epsonstate, container,false);
+        mEpsonSelected =Propriedades.getInstance().getSelectedEpson();
 
-        rootView = inflater.inflate(R.layout.fragment_epsonstate, container, false);
-        manbt= (ToggleButton)rootView.findViewById(R.id.btmanmode);
-        progresswaitman= (ProgressBar)rootView.findViewById(R.id.progressWaitMan);
-        txtRbState =(TextView)rootView.findViewById(R.id.textRbState);
-        txtRbMsg=(TextView)rootView.findViewById(R.id.textMsgRb);
-        manbt.setEnabled(false);
+        if (mEpsonSelected !=null) {
 
 
-        progresswaitman.setVisibility(View.GONE);
-        manbt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(manbt.isChecked()==true){
-                    Epson selected=Propriedades.getInstance().getSelectedEpson();
-                    selected.getTcpClient().sendMessage("SET|MANMODE");
+            manbt= (ToggleButton)rootView.findViewById(R.id.btmanmode);
+            manbt.setEnabled(mEpsonSelected.getRobotState()== Epson.RobotState.ONLINE);
+
+            manbt.setOnClickListener(this);
+
+            progresswaitman= (ProgressBar)rootView.findViewById(R.id.progressWaitMan);
+            switch (mEpsonSelected.getRobotManState()){
+                case MANMODEON:
+                    manbt.setText("Ligado");
+                    progresswaitman.setVisibility(View.GONE);
+                    break;
+                case MANMODEOFF:
+                    progresswaitman.setVisibility(View.GONE);
+                    break;
+                case WAITMANMODEON:
                     progresswaitman.setVisibility(View.VISIBLE);
-                }
+                    break;
             }
-        });
+
+            txtRbState =(TextView)rootView.findViewById(R.id.textRbState);
+            switch (mEpsonSelected.getRobotState()){
+                case ONLINE:
+                    txtRbState.setText("Robot Ligado");
+                    progresswaitman.setVisibility(View.GONE);
+
+                    break;
+                case OFFLINE:
+                    txtRbState.setText("Robot Desligado");
+                    progresswaitman.setVisibility(View.GONE);
+                    manbt.setEnabled(false);
+                    break;
+
+            }
+
+            txtRbMsg=(TextView)rootView.findViewById(R.id.textMsgRb);
+        }
 
         return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(mEpsonSelected.getRobotManState()== Epson.RobotManState.MANMODEOFF){
+
+            mEpsonSelected.getTcpClient().sendMessage("SET|MANMODE");
+            if (progresswaitman!=null) {
+                progresswaitman.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

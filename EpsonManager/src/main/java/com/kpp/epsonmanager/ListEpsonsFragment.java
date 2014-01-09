@@ -15,7 +15,7 @@ import android.widget.ToggleButton;
  * Created by Geral on 15-10-2013.
  */
 
-public class ListEpsonsFragment extends Fragment {
+public class ListEpsonsFragment extends Fragment implements AdapterView.OnItemClickListener,Epson.OnEpsonStatusChanged {
 //        public static String ARG_SECTION_NUMBER ;
 
     /**
@@ -39,94 +39,92 @@ public class ListEpsonsFragment extends Fragment {
 
     }
 
-    public  EpsonListAdapter EpsonsAdapter=null;
+    private EpsonListAdapter adapter=null;
+    //public  EpsonListAdapter EpsonsAdapter=null;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
+
+
+
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_epsons, container, false);
 
 
 
 
-        //Epson[] epsons= (Epson[])Propriedades.getInstance().getEpsons().toArray();
-            final EpsonListAdapter adapter = new EpsonListAdapter(getActivity(),
+            adapter = new EpsonListAdapter(getActivity(),
                     R.layout.epson_item_row,(Propriedades.getInstance().getEpsons()));
 
-            EpsonsAdapter=adapter;
-            ListEpsons = (ListView)rootView.findViewById(R.id.listViewEpsons);
 
-            //View header = (View)inflater.inflate(R.layout.epsons_header, null);
-            //ListEpsons.addHeaderView(header);
+
+            ListEpsons = (ListView)rootView.findViewById(R.id.listViewEpsons);
 
 
             ListEpsons.setAdapter(adapter);
-            ListEpsons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ListEpsons.setSelection(position);
-                    Epson selected=Propriedades.getInstance().getEpsons().get(position);
+            ListEpsons.setOnItemClickListener(this);
 
 
-                    Propriedades.getInstance().setSelectedEpson(selected);
-                    if (selected.getmOnEpsonStatusChanged()==null)
-                        selected.setmOnEpsonStatusChanged(new Epson.OnEpsonStatusChanged() {
-                            @Override
-                            public void EpsonStatusChanged(Epson.OnEpsonStatusChangedEventArgs args) {
-                                if (args.getState()== Epson.ConnectionState.CONNECTED){
-                                        getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            MainActivity.mEpsonViewPager.setPagingEnabled(true);
-                                            adapter.notifyDataSetChanged();
-
-                                        }
-                                    });
-                                }
-                                else if (args.getState()== Epson.ConnectionState.DISCONNECTED){
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-
-                                            MainActivity.mEpsonViewPager.setPagingEnabled(false);
-                                            MainActivity.mEpsonViewPager.setCurrentItem(0);
-                                            adapter.notifyDataSetChanged();
-
-                                        }
-                                    });
-                                }
-                                else if (args.getState()== Epson.ConnectionState.CONNECTING){
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-//                    if (selected.isConnected()==false)
-//                        selected.setConnected();
-//                    else{
-//                        selected.getTcpClient().stopClient();
-//
-//                    }
-
-
-
-                    //view.setBackgroundColor(Color.parseColor("#FEF0D4"));
-                }
-            });
-
-
-        int mActivePosition=0;
-        ListEpsons.performItemClick(
-                ListEpsons.getAdapter().getView(mActivePosition, null, null),
-                mActivePosition,
-                ListEpsons.getAdapter().getItemId(mActivePosition));
-
-        //TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
-        //dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         return rootView;
     }
 
 
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            ListEpsons.setSelection(position);
+            Epson selected=Propriedades.getInstance().getEpsons().get(position);
+
+
+            Propriedades.getInstance().setSelectedEpson(selected);
+            if (selected.getmOnEpsonStatusChanged()==null)
+                selected.setmOnEpsonStatusChanged(this);
+            //MainActivity.mEpsonPagerAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void EpsonStatusChanged(Epson.OnEpsonStatusChangedEventArgs args) {
+            if (args.getState()== Epson.ConnectionState.CONNECTED){
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        MainActivity.mEpsonViewPager.setPagingEnabled(true);
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            }
+            else if (args.getState()== Epson.ConnectionState.DISCONNECTED){
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        MainActivity.mEpsonViewPager.setPagingEnabled(false);
+                        MainActivity.mEpsonViewPager.setCurrentItem(0);
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            }
+            else if (args.getState()== Epson.ConnectionState.CONNECTING){
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            }
+        }
 }

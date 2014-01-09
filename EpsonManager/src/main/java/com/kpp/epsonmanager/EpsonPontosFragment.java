@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 /**
@@ -18,7 +17,7 @@ import android.widget.Spinner;
 public class EpsonPontosFragment extends Fragment implements View.OnClickListener {
 
 
-    public  Spinner spinnerPontos=null;
+    public  Spinner mSpinnerPontos =null;
 
 
     private String title="Pontos";
@@ -42,7 +41,7 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
               //  String value = input.getText();
                 // Do something with value!
                 Epson selected=Propriedades.getInstance().getSelectedEpson();
-                selected.getTcpClient().sendMessage("SET|POINT|"+spinnerPontos.getSelectedItem().toString());
+                selected.getTcpClient().sendMessage("SET|POINT|" + mSpinnerPontos.getSelectedItem().toString());
             }
         });
 
@@ -55,19 +54,24 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
         alert.show();
 // see http://androidsnippets.com/prompt-user-input-with-an-alertdialog
     }
-
+    ArrayAdapter<String> adapter=null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_epsonstate, container, false);
-
-        rootView = inflater.inflate(R.layout.fragment_epsonpoints, container, false);
 
 
-        spinnerPontos=(Spinner)rootView.findViewById(R.id.spinnerPontos);
 
-        Propriedades.getInstance().getSelectedEpson().ListPointsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item);
-        spinnerPontos.setAdapter(Propriedades.getInstance().getSelectedEpson().ListPointsAdapter);
+        View rootView = inflater.inflate(R.layout.fragment_epsonpoints, container, false);
+
+
+
+        mSpinnerPontos =(Spinner)rootView.findViewById(R.id.spinnerPontos);
+
+
+        if (adapter==null)
+            adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item);
+
+        mSpinnerPontos.setAdapter(adapter);
 
 
         Button savebt=(Button)rootView.findViewById(R.id.btsavept);
@@ -80,8 +84,8 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
                 Epson selected=Propriedades.getInstance().getSelectedEpson();
                 try {
 
-                    if (spinnerPontos.getSelectedItem()!=null) {
-                        selected.getTcpClient().sendMessage("JUMPTO|POINT|"+spinnerPontos.getSelectedItem().toString());
+                    if (mSpinnerPontos.getSelectedItem()!=null) {
+                        selected.getTcpClient().sendMessage("JUMPTO|POINT|"+ mSpinnerPontos.getSelectedItem().toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -91,7 +95,7 @@ public class EpsonPontosFragment extends Fragment implements View.OnClickListene
 
 //            ListPointsAdapter = new ArrayAdapter(this.getActivity(),
 //                    android.R.layout.simple_spinner_dropdown_item,R.array.pontos);
-//            spinnerPontos.setAdapter(ListPointsAdapter);
+//            mSpinnerPontos.setAdapter(ListPointsAdapter);
 
 
 

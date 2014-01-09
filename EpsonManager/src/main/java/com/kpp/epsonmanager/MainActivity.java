@@ -24,11 +24,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 
@@ -155,6 +157,11 @@ public class MainActivity extends FragmentActivity implements
         return null;
     }
 
+    public static ListEpsonsFragment mListEpsonsFragment =null;
+    public static EpsonStateFragment mEpsonStateFragment=null;
+    public static EpsonPontosFragment mEpsonPontosFragment=null;
+    public static EpsonJogFragment mEpsonJogFragment =null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,10 +196,15 @@ public class MainActivity extends FragmentActivity implements
         mEpsonPagerAdapter = new EpsonPagerAdapter(getSupportFragmentManager(),mEpsonViewPager);
 
         mEpsonViewPager.setAdapter(mEpsonPagerAdapter);
+        mListEpsonsFragment =new ListEpsonsFragment();
+        mEpsonStateFragment=new EpsonStateFragment();
+        mEpsonPontosFragment=new EpsonPontosFragment();
+        mEpsonJogFragment= new EpsonJogFragment();
 
-        mEpsonPagerAdapter.AddFragment(new ListEpsonsFragment());
-        mEpsonPagerAdapter.AddFragment(new EpsonStateFragment());
-        mEpsonPagerAdapter.AddFragment(new EpsonPontosFragment());
+        mEpsonPagerAdapter.AddFragment(mListEpsonsFragment);
+        mEpsonPagerAdapter.AddFragment(mEpsonStateFragment);
+        mEpsonPagerAdapter.AddFragment(mEpsonPontosFragment);
+        mEpsonPagerAdapter.AddFragment(mEpsonJogFragment);
         mEpsonPagerAdapter.notifyDataSetChanged();
 
         Propriedades.getInstance().setHandlerListener(new Propriedades.NewEpsonSelectedListener() {
@@ -237,8 +249,8 @@ public class MainActivity extends FragmentActivity implements
 
                 if (selectedfrag!=null) {
                     if (selectedfrag instanceof ListEpsonsFragment){
-                        if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
-                            ((ListEpsonsFragment)selectedfrag).EpsonsAdapter.notifyDataSetChanged();
+                        if (((ListEpsonsFragment)selectedfrag).ListEpsons.getAdapter()!=null) {
+                            ((EpsonListAdapter)((ListEpsonsFragment)selectedfrag).ListEpsons.getAdapter()).notifyDataSetChanged();
                         }
                     }
                 }
@@ -252,14 +264,15 @@ public class MainActivity extends FragmentActivity implements
 
                 if (selectedfrag!=null) {
                     if (selectedfrag instanceof ListEpsonsFragment){
-                        if (((ListEpsonsFragment)selectedfrag).EpsonsAdapter!=null) {
+                        if (((ListEpsonsFragment)selectedfrag).ListEpsons.getAdapter()!=null) {
 
                             configs.getEpsons().remove(Propriedades.getInstance().getSelectedEpson());
-                            ((ListEpsonsFragment)selectedfrag).EpsonsAdapter.notifyDataSetChanged();
+                            ((EpsonListAdapter)((ListEpsonsFragment)selectedfrag).ListEpsons.getAdapter()).notifyDataSetChanged();
                         }
                     }
                 }
 
+                mEpsonPagerAdapter.notifyDataSetChanged();
 
                 return true;
 
@@ -279,68 +292,37 @@ public class MainActivity extends FragmentActivity implements
         return super.onCreateOptionsMenu(menu);
     }
     
-    
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
 
 
-    public class EpsonPagerAdapter extends FragmentPagerAdapter {
+    public class EpsonPagerAdapter extends FragmentStatePagerAdapter  {
 
         private List<Fragment> mFragments = new ArrayList<Fragment>();
 
         public EpsonPagerAdapter(FragmentManager fm,ViewPager vp) {
             super(fm);
+
         }
 
+
         public  void AddFragment(Fragment frag){
+
             mFragments.add(frag);
         }
 
-        public  void RemoveFragment(Fragment frag){
-            mFragments.remove(frag);
-        }
+//        public  void RemoveFragment(Fragment frag){
+//            mFragments.remove(frag);
+//        }
 
-        public  void RemoveFragment(int pos){
-            if (mFragments.size()>pos)
-                mFragments.remove(pos);
-
-            this.notifyDataSetChanged();
-        }
 
         public ArrayAdapter<Epson> EpsonsAdapter=null;
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a ListEpsonsFragment (defined as a static inner class
-            // below) with the page number as its lone argument.
 
-//            Fragment fragment = new ListEpsonsFragment();
-//            Bundle args = new Bundle();
-//            args.putInt(ListEpsonsFragment.ARG_SECTION_NUMBER, position + 1);
-//            fragment.setArguments(args);
-//            if ( Propriedades.getInstance().getSelectedEpson()!=null){
-//                Epson epson=Propriedades.getInstance().getSelectedEpson();
-//                if (epson.isConnected()==false)
-//                    return  null;
-//            }
-           // if (position>1) return  null;
-            if (position>=mFragments.size())
-                return null;
+            Fragment selected=mFragments.get(position);
 
-            Fragment selectedfrag=mFragments.get(position);
+            return selected;
 
-//            if (selectedfrag!=null) {
-//                if (selectedfrag.getClass().equals(ListEpsonsFragment.class)){
-//                    EpsonsAdapter=((ListEpsonsFragment)selectedfrag).EpsonsAdapter;
-//                }
-//            }
 
-            return selectedfrag;
-
-            //return mFragments.get(position);
         }
 
         @Override
@@ -350,7 +332,10 @@ public class MainActivity extends FragmentActivity implements
         }
 
 
-
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
@@ -368,8 +353,12 @@ public class MainActivity extends FragmentActivity implements
                     //return getString(R.string.title_section2).toUpperCase(l);
                 case 2:
                     return "Pontos";
+                case 3:
+                    return "JOG";
+                default:
+                    return "Not Set";
             }
-            return null;
+            //return "Not Set";
         }
     }
 
